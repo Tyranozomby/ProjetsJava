@@ -18,7 +18,7 @@ public class Main {
         Player player2 = new Player(name2, ConsoleColors.BLUE);
         init(player1, player2);
 
-        // Stack of cards to draw from
+        // Stack of cards used to store cards in case of a draw
         ArrayList<Card> centerStack = new ArrayList<>();
 
         System.out.println("Début de la partie");
