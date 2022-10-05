@@ -1,4 +1,4 @@
-# Bataille
+# Projet - Bataille
 
 ## Lancement
 
@@ -21,7 +21,7 @@ Après cette étape, le jeu commence.
 
 ### Le Jeu
 
-Nous disposons d'un paquet de **52 cartes**, qui sont mélangées aléatoirement.
+Nous disposons d'un paquet de **52 cartes**, qui sont mélangées aléatoirement. La carte la plus forte est l'as, tandis que la plus faible est le deux
 Chaque joueur reçoit **26 cartes** et le jeu commence.
 
 Le jeu se déroule en plusieurs manches.
