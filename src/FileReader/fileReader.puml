@@ -1,0 +1,47 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty methods
+hide empty attributes
+
+interface Reader {
+  + {static} DIRECTORY: String
+  + read(): String
+}
+
+abstract TextReader {
+  - path: String {readOnly}
+  + read(): String
+  # {abstract} process(String): String
+}
+
+note right of TextReader
+  read() get the content of the file (path)
+  and call the process() method
+end note
+
+namespace Readers {
+  class NormalReader {
+    + main(String[])
+  }
+
+  class ReverseReader {
+    + main(String[])
+  }
+
+  class PalindromeReader {
+    + main(String[])
+  }
+
+  class DiffReader {
+    + main(String[])
+  }
+}
+
+TextReader .up.^ Reader
+Readers.NormalReader -up-^ TextReader
+Readers.ReverseReader -up-^ TextReader
+Readers.PalindromeReader -up-^ TextReader
+Readers.DiffReader -up-^ TextReader
+
+@enduml
