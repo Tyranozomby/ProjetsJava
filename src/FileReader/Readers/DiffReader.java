@@ -18,8 +18,8 @@ public class DiffReader extends TextReader {
     }
 
     public static void main(String[] args) {
-        // TODO Faire fonctionner si j'ai le temps
-        System.out.println("March pô");
+        // TODO Faire fonctionner à nouveau mais mieux si possible
+        System.out.println("March pô, déso pas déso");
 
 //        String path = "diff1.txt";
 //        String path2 = "diff2.txt";
