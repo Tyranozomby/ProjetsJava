@@ -1,5 +1,3 @@
-package FileReader;
-
 import java.io.IOException;
 
 public interface Reader {
@@ -7,7 +5,7 @@ public interface Reader {
     /**
      * Directory where the files are located
      */
-    String DIRECTORY = "files/FileReader/";
+    String DIRECTORY = "files/";
 
     /**
      * Read the file

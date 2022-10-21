@@ -1,5 +1,3 @@
-package Bataille;
-
 /**
  * Récupéré sur StackOverflow
  *

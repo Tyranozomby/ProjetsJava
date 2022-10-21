@@ -1,7 +1,3 @@
-package FileReader.Readers;
-
-import FileReader.TextReader;
-
 import java.io.IOException;
 
 public class DiffReader extends TextReader {

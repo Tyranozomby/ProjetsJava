@@ -1,7 +1,3 @@
-package FileReader.Readers;
-
-import FileReader.TextReader;
-
 public class NormalReader extends TextReader {
 
     public NormalReader(String path) {
@@ -9,7 +5,7 @@ public class NormalReader extends TextReader {
     }
 
     public static void main(String[] args) {
-        String path = "normal.txt";
+        String path = DIRECTORY + "normal.txt";
 
         if (args.length >= 1) {
             path = args[0];
@@ -17,12 +13,12 @@ public class NormalReader extends TextReader {
             System.out.println("Aucun chemin donné, utilisation du chemin par défaut: " + path + "\n");
         }
 
-        NormalReader normalReader = new NormalReader(DIRECTORY + path);
+        NormalReader normalReader = new NormalReader(path);
 
         try {
             System.out.println(normalReader.read());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,3 @@
-package Bataille;
-
 public class Card {
     public static final String[] COLORS_NAME = {"Pique", "Coeur", "Carreau", "Trèfle"};
 

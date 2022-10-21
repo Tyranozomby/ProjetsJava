@@ -5,16 +5,16 @@
 Chaque reader peut être lancé individuellement à l'aide de la commande suivante :
 
 ```sh
-java FileReader.Readers.<reader> [args]
+java <reader> [args]
 ```
 
-Ou lancer à l'aide de l'IDE le fichier `src/FileReader/Readers/<reader>.java` ([ici](Readers)).
+Ou lancer à l'aide de l'IDE le fichier `FileReader/src/<reader>.java` ([ici](src)).
 
 Il est possible de donner le chemin du fichier à lire en argument, sinon leur fichier par défaut sera utilisé.
 
-Le _DiffReader_ lui prend deux fichiers en argument.
+Le _DiffReader_ lui prend deux fichiers en argument, mais ne fonctionne pas.
 
-Attention, le fichier doit être présent dans le dossier ``files/FileReader``.
+Attention, le fichier doit être présent dans le dossier ``files``.
 
 ## Les readers
 

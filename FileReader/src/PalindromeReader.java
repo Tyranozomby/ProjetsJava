@@ -1,7 +1,3 @@
-package FileReader.Readers;
-
-import FileReader.TextReader;
-
 public class PalindromeReader extends TextReader {
 
     public PalindromeReader(String path) {
@@ -9,7 +5,7 @@ public class PalindromeReader extends TextReader {
     }
 
     public static void main(String[] args) {
-        String path = "palindrome.txt";
+        String path = DIRECTORY + "palindrome.txt";
 
         if (args.length >= 1) {
             path = args[0];
@@ -17,12 +13,12 @@ public class PalindromeReader extends TextReader {
             System.out.println("Aucun chemin donné, utilisation du chemin par défaut: " + path + "\n");
         }
 
-        PalindromeReader palindromeReader = new PalindromeReader(DIRECTORY + path);
+        PalindromeReader palindromeReader = new PalindromeReader(path);
 
         try {
             System.out.println(palindromeReader.read());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

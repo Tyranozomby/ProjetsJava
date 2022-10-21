@@ -1,5 +1,3 @@
-package FileReader;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,6 +23,7 @@ public abstract class TextReader implements Reader {
     public String read() throws IOException {
         // Get the content of the file
         String content = new String(Files.readAllBytes(Paths.get(path)));
+        System.out.println("Lecture du fichier " + content);
         return process(content);
     }
 

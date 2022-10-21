@@ -1,7 +1,3 @@
-package FileReader.Readers;
-
-import FileReader.TextReader;
-
 public class ReverseReader extends TextReader {
 
     public ReverseReader(String path) {
@@ -9,7 +5,7 @@ public class ReverseReader extends TextReader {
     }
 
     public static void main(String[] args) {
-        String path = "reverse.txt";
+        String path = DIRECTORY + "reverse.txt";
 
         if (args.length >= 1) {
             path = args[0];
@@ -17,12 +13,12 @@ public class ReverseReader extends TextReader {
             System.out.println("Aucun chemin donné, utilisation du chemin par défaut: " + path + "\n");
         }
 
-        ReverseReader reverseReader = new ReverseReader(DIRECTORY + path);
+        ReverseReader reverseReader = new ReverseReader(path);
 
         try {
             System.out.println(reverseReader.read());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
