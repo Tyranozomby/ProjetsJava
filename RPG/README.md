@@ -107,7 +107,7 @@ Certains consommables ne peuvent être utilisés qu'en combat.
 
 #### Armes
 
-Exemples d'armes :
+Armes par défaut vues dans la présentation des classes :
 
 Ce tableau présente les caractéristiques des attaques normales.
 

@@ -53,7 +53,9 @@ public class ConsoleUI implements UICallbacks {
 
     @Override
     public void onGameStart(Map map) {
-        System.out.println("Game started : " + map);
+        System.out.println("Game started : ");
+        System.out.println(map.getCurrentLevel());
+        System.out.println(getLevelString(map.getCurrentLevel(), map.getPosition()));
     }
 
     @Override
@@ -309,11 +311,12 @@ public class ConsoleUI implements UICallbacks {
 
     @Override
     public void onProfileOpen(Player player) {
+        System.out.println(player.getName() + "'s profile : ");
         System.out.println(player.getHealth() + "/" + player.getStat(Stats.MAX_HEALTH) + " hp");
         System.out.println(player.getGold() + " gold");
         System.out.println(player.getInventory().getWeapons().size() + " weapons");
         System.out.println(player.getInventory().getConsumables(true).size() + " consumables");
-        player.getStats().keySet().stream().filter(k -> k != Stats.MAX_HEALTH).forEach(stat -> System.out.println("Player has " + player.getStats().get(stat) + " " + stat));
+        player.getStats().keySet().stream().filter(k -> k != Stats.MAX_HEALTH).forEach(stat -> System.out.println("Player has " + player.getStats().get(stat).toString().toLowerCase().replaceAll("_", " ") + " " + stat));
     }
 
     @Override
@@ -351,26 +354,13 @@ public class ConsoleUI implements UICallbacks {
 
     @Override
     public Direction getDirection(Map map) {
-        Position pos = map.getPosition();
         Level level = map.getCurrentLevel();
+        Position pos = map.getPosition();
 
-        StringBuilder toString = new StringBuilder();
-        ArrayList<ArrayList<Tile>> tiles = level.getTiles();
-        for (int i = 0; i < tiles.size(); i++) {
-            ArrayList<Tile> tileRow = tiles.get(i);
-            for (int j = 0; j < tileRow.size(); j++) {
-                Tile tile = tileRow.get(j);
-                if (i == pos.getY() && j == pos.getX()) {
-                    toString.append("\u001B[31m⬤\u001B[0m");
-                } else {
-                    toString.append(TileManager.getTileChar(tile.getClass()));
-                }
-            }
-            toString.append("\n");
-        }
+        String levelString = getLevelString(level, pos);
 
         while (true) {
-            System.out.println(toString);
+            System.out.println(levelString);
             System.out.println("Choose a direction :");
             System.out.println("0. Cancel");
             System.out.println("1. Up");
@@ -386,6 +376,8 @@ public class ConsoleUI implements UICallbacks {
             }
 
             if (choice == 0) return null;
+
+            ArrayList<ArrayList<Tile>> tiles = level.getTiles();
 
             switch (choice) {
                 case 1 -> {
@@ -411,6 +403,24 @@ public class ConsoleUI implements UICallbacks {
                 default -> System.err.println("Invalid choice");
             }
         }
+    }
+
+    private String getLevelString(Level level, Position pos) {
+        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<ArrayList<Tile>> tiles = level.getTiles();
+        for (int i = 0; i < tiles.size(); i++) {
+            ArrayList<Tile> tileRow = tiles.get(i);
+            for (int j = 0; j < tileRow.size(); j++) {
+                Tile tile = tileRow.get(j);
+                if (i == pos.getY() && j == pos.getX()) {
+                    stringBuilder.append("\u001B[31m⬤\u001B[0m");
+                } else {
+                    stringBuilder.append(TileManager.getTileChar(tile.getClass()));
+                }
+            }
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     @Override
