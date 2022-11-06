@@ -1,0 +1,77 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide empty methods
+hide empty attributes
+
+package entities {
+    abstract class Entity {
+        -name: String
+        -description: String
+        -physicalDamage: int
+        -magicalDamage: int
+        -physicalDefense: int
+        -magicalDefense: int
+        -currentHealth: int
+        -maxHealth: int
+        -equippedWeapon: Weapon
+        +Entity(name: String, description: String, physicalDamage: int, magicalDamage: int, physicalDefense: int, magicalDefense: int, maxHealth: int)
+    }
+
+    class Player extends Entity {
+        -inventory: Inventory
+        -gold: int
+    }
+
+    abstract class Monster extends Entity {
+        -level: int
+        -lootTable
+    }
+}
+
+abstract class Attack {
+    -name: String
+    -description: String
+    -physicalDamage: int
+    -magicalDamage: int
+    -effects: RandomChanceEffect[]
+    #Attack(physicalDamage: int, magicalDamage: int, effects: RandomChanceEffect[], name: String, description: String)
+}
+
+class SingleTargetAttack extends Attack {
+    +SingleTargetAttack(physicalDamage: int, magicalDamage: int, effects: RandomChanceEffect[], name: String)
+    +attack(from: Entity, to: Entity, fight Fight)
+}
+
+class AutoTargetAttack extends Attack {
+    +AutoTargetAttack(physicalDamage: int, magicalDamage: int, effects: RandomChanceEffect[], name: String)
+    +attack(from: Entity, fight Fight)
+}
+
+class RandomChanceEffect {
+    -effectClass: Effect
+    -chance: float
+    +RandomChanceEffect(effectClass: Class<? extends Effect>, chance: float)
+    +tryApply(from: Entity, to: Entity, fight Fight)
+}
+
+class Effect {
+    #name: String
+    #description: String
+    #from: Entity
+    #to: Entity
+    #fight: Fight
+    +Effect(name: String, description: String, from: Entity, to: Entity, fight: Fight)
+}
+
+class Fight {
+    -player: Player
+    -monsters: Monster[]
+    -turns: int
+    -currentEntityTurnIndex: int
+    -playOrder: ArrayList<Entity>
+    +Fight(player: Player, monsters: Monster[])
+    +doFight()
+}
+
+@enduml
