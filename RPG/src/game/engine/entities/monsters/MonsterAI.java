@@ -11,12 +11,16 @@ import game.engine.fight.actions.attacks.SingleTargetAttackFightAction;
 import game.engine.fight.attacks.Attack;
 import game.engine.fight.attacks.AutoTargetAttack;
 import game.engine.fight.attacks.SingleTargetAttack;
+import utils.Random;
+
+import java.util.List;
 
 /**
  * This class is used to determine the AI of a monster.
  * It is used to determine the actions of a monster in a fight.
  */
 @FunctionalInterface
+@SuppressWarnings("unused")
 public interface MonsterAI {
 
     /**
@@ -28,7 +32,8 @@ public interface MonsterAI {
      * Choose a random attack
      */
     MonsterAI RANDOM = (monster, fight) -> {
-        Attack attack = monster.getWeapon().getAttacks().get((int) (Math.random() * monster.getWeapon().getAttacks().size()));
+        List<Attack> attacks = monster.getWeapon().getAttacks();
+        Attack attack = Random.getRandomValue(attacks);
         if (attack instanceof AutoTargetAttack) {
             return new AutoTargetAttackFightAction((AutoTargetAttack) attack);
         } else {
@@ -37,10 +42,11 @@ public interface MonsterAI {
     };
 
     /**
-     * Ai that only uses the first/normal attack
+     * Ai that only uses normal attacks (no effect)
      */
     MonsterAI BASIC = (monster, fight) -> {
-        Attack attack = monster.getWeapon().getAttacks().get(0);
+        List<Attack> attacks = monster.getWeapon().getAttacks().stream().filter(a -> a.getEffects().size() == 0).toList();
+        Attack attack = Random.getRandomValue(attacks);
         if (attack instanceof AutoTargetAttack) {
             return new AutoTargetAttackFightAction((AutoTargetAttack) attack);
         } else {
@@ -49,10 +55,11 @@ public interface MonsterAI {
     };
 
     /**
-     * Ai that only uses the second/special attack if exists
+     * Ai that only uses special attacks (with effects)
      */
     MonsterAI SPECIAL = (monster, fight) -> {
-        Attack attack = monster.getWeapon().getAttacks().get(monster.getWeapon().getAttacks().size() - 1);
+        List<Attack> attacks = monster.getWeapon().getAttacks().stream().filter(a -> a.getEffects().size() > 0).toList();
+        Attack attack = Random.getRandomValue(attacks);
         if (attack instanceof AutoTargetAttack) {
             return new AutoTargetAttackFightAction((AutoTargetAttack) attack);
         } else {

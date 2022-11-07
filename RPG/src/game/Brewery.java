@@ -6,6 +6,7 @@ import game.engine.fight.Fight;
 import game.engine.items.consumables.AutoTargetConsumable;
 import game.engine.items.consumables.Consumable;
 import game.engine.items.consumables.SingleTargetConsumable;
+import utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,7 +117,7 @@ public class Brewery {
     }
 
     public static Consumable getRandomConsumable(int level) {
-        return CONSUMABLES.get(level).get((int) (Math.random() * CONSUMABLES.get(level).size())).brew(level);
+        return Random.getRandomValue(CONSUMABLES.get(level)).brew(level);
     }
 
     public static List<Consumable> getAll(int level) {

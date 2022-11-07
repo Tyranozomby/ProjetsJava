@@ -32,7 +32,7 @@ public interface UICallbacks {
 
     void onTurnStart(Entity entity, int turn);
 
-    void onTurnEnd();
+    void onTurnEnd(Fight fight);
 
     void onPlayerDeath(Player player);
 
@@ -69,9 +69,9 @@ public interface UICallbacks {
     // INVENTORY
     Item onInventoryOpen(Player inventory);
 
-    void onWeaponEquip(Weapon weapon);
+    void onWeaponEquipped(Weapon weapon);
 
-    void onWeaponUnequip(Weapon weapon);
+    void onWeaponUnequipped(Weapon weapon);
 
     // SHOP
     Item onShopOpen(Player player, List<Item> shopItems);

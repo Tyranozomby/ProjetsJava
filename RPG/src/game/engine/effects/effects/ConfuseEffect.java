@@ -11,11 +11,9 @@ public class ConfuseEffect extends Effect implements BeforeActionEffect {
 
     private int turnsLeft;
 
-    public ConfuseEffect() {
-        super("Confuse", "Can skip the turn of the entity");
-
-        // Duration between 2 and 5 turns (included)
-        turnsLeft = Random.getRandomInt(2, 5);
+    public ConfuseEffect(int last) {
+        super("Confuse", "Can skip the turn of the entity. Will last " + last + " turns.");
+        turnsLeft = last;
     }
 
     /**
@@ -28,7 +26,7 @@ public class ConfuseEffect extends Effect implements BeforeActionEffect {
     public FightAction beforeActionAction(FightAction action) {
         Game.UI_CALLBACKS.onEffectActivation(this);
 
-        if (Random.tryChance(1) && !(action instanceof SkipTurn)) {
+        if (Random.tryChance(.6) && !(action instanceof SkipTurn)) {
             LOGGER.info(thisEntity + " is confused. Turn skipped.");
             return new SkipTurn();
         }

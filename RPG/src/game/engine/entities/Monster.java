@@ -26,6 +26,7 @@ public class Monster extends Entity {
         for (Effect effect : effects) {
             applyEffect(effect, this, null);
         }
+        LOGGER.warning("Monster " + name + " has " + effects.size() + " effects." + (effects.size() > 0 ? " Effects: " + effects : ""));
     }
 
     @Override

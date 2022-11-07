@@ -60,7 +60,11 @@ public class ConsoleUI implements UICallbacks {
 
     @Override
     public void onGameEnd(boolean victory) {
-        System.out.println("Game ended by winning : " + victory);
+        if (victory) {
+            System.out.println("\u001B[32mYou won the game !\u001B[0m");
+        } else {
+            System.out.println("\u001B[31mYou lost the game ! Git gud !\u001B[0m");
+        }
     }
 
     @Override
@@ -93,8 +97,12 @@ public class ConsoleUI implements UICallbacks {
     }
 
     @Override
-    public void onTurnEnd() {
+    public void onTurnEnd(Fight fight) {
         System.out.println("Turn ended");
+        System.out.println(fight.getPlayer() + " (" + fight.getPlayer().getHealth() + "hp)");
+        for (Monster monster : fight.getMonsters()) {
+            System.out.println(monster + " (" + monster.getHealth() + "hp)");
+        }
     }
 
     @Override
@@ -260,12 +268,12 @@ public class ConsoleUI implements UICallbacks {
 
 
     @Override
-    public void onWeaponEquip(Weapon weapon) {
+    public void onWeaponEquipped(Weapon weapon) {
         System.out.println("Equipped weapon " + weapon);
     }
 
     @Override
-    public void onWeaponUnequip(Weapon weapon) {
+    public void onWeaponUnequipped(Weapon weapon) {
         System.out.println("Unequipped weapon " + weapon);
     }
 
@@ -314,6 +322,7 @@ public class ConsoleUI implements UICallbacks {
         System.out.println(player.getName() + "'s profile : ");
         System.out.println(player.getHealth() + "/" + player.getStat(Stats.MAX_HEALTH) + " hp");
         System.out.println(player.getGold() + " gold");
+        System.out.println("Current weapon : " + player.getWeapon());
         System.out.println(player.getInventory().getWeapons().size() + " weapons");
         System.out.println(player.getInventory().getConsumables(true).size() + " consumables");
         player.getStats().keySet().stream().filter(k -> k != Stats.MAX_HEALTH).forEach(stat -> System.out.println("Player has " + player.getStats().get(stat).toString().toLowerCase().replaceAll("_", " ") + " " + stat));

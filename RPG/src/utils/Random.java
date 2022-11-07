@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.List;
+
 public class Random {
 
     /**
@@ -29,5 +31,9 @@ public class Random {
             max = temp;
         }
         return (int) (Math.random() * (max - min + 1) + min);
+    }
+
+    public static <T> T getRandomValue(List<T> list) {
+        return list.get(getRandomInt(0, list.size() - 1));
     }
 }

@@ -15,6 +15,12 @@ Deux interfaces utilisateurs sont disponibles :
 - `ConsoleUI` : interface en ligne de commande ([ici](src/ui/ConsoleUI.java))
 - `SwingUI` : interface graphique Swing __*(À venir)*__
 
+L'interface en ligne de commande est intentionnellement moche et peu pratique. Elle est là pour tester le jeu et pour
+montrer que l'interface graphique est possible.
+Cependant, elle est complètement fonctionnelle.
+
+L'interface graphique Swing est en cours de développement.
+
 ## Déroulement du jeu
 
 ### Création du personnage
@@ -77,6 +83,8 @@ terminée.
 À chaque niveau, les ennemis sont plus forts. À partir du niveau 2, il est possible d'affronter deux ennemis en même
 temps.
 
+Les ennemis ont 10% de chance d'avoir un niveau en moins et 10% de chance d'avoir un niveau en plus.
+
 Exemples d'ennemis :
 
 |   Nom    | Niveaux |                                Caractéristique                                 |
@@ -127,7 +135,7 @@ Ce tableau présente les caractéristiques des attaques spéciales.
 |  *Couteau*   |        0         |        0        | 50% de chance de one shot un ennemi<br/>mais 100% de chance de perdre l'arme |  5   |
 |  *Assiette*  |        0         |        0        |   80% de chance de réduire de moitié les prochains dégâts physiques reçus    |  5   |
 
-> D'autres armes sont à venir
+> D'autres armes existent et sont à venir
 
 ### Magasin
 

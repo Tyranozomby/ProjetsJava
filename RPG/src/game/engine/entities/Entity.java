@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 public abstract class Entity {
 
-    private final Logger LOGGER = Logger.getLogger(Entity.class.getName());
+    protected final Logger LOGGER = Logger.getLogger(Entity.class.getName());
 
     private final HashSet<Effect> effects = new HashSet<>();
 
@@ -53,12 +53,12 @@ public abstract class Entity {
      */
     public void equipWeapon(Weapon newWeapon) {
         if (equippedWeapon != null)
-            Game.UI_CALLBACKS.onWeaponUnequip(equippedWeapon);
+            Game.UI_CALLBACKS.onWeaponUnequipped(equippedWeapon);
 
         equippedWeapon = newWeapon;
 
         if (equippedWeapon != null)
-            Game.UI_CALLBACKS.onWeaponEquip(equippedWeapon);
+            Game.UI_CALLBACKS.onWeaponEquipped(equippedWeapon);
     }
 
     public boolean isAlive() {
@@ -87,6 +87,8 @@ public abstract class Entity {
                 LOGGER.info(from + " tries to apply " + effect + " to " + this + ", but it already has this effect.");
                 Game.UI_CALLBACKS.onEffectFailedApply(this, effect);
             }
+        } else {
+            effects.add(effect);
         }
 
         if (effect instanceof InstantEffect) {
@@ -152,7 +154,7 @@ public abstract class Entity {
      * @return TODO
      */
     public <T extends EffectTrigger, V> V triggerEffectWithReturn(Class<T> effectClass, Function<T, V> effectTrigger) {
-
+        LOGGER.warning(effects.toString());
         return List.copyOf(effects)
                 .stream()
                 .filter(effectClass::isInstance)

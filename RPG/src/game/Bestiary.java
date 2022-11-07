@@ -1,8 +1,14 @@
 package game;
 
+import game.engine.effects.RandomChanceEffect;
+import game.engine.effects.effects.OneShotEffect;
 import game.engine.effects.effects.ThornsEffect;
 import game.engine.entities.Monster;
 import game.engine.entities.monsters.MonsterAI;
+import game.engine.fight.Fight;
+import game.engine.fight.attacks.AutoTargetAttack;
+import game.engine.fight.attacks.SingleTargetAttack;
+import game.engine.items.Weapon;
 import utils.Random;
 
 import java.util.ArrayList;
@@ -44,6 +50,28 @@ public class Bestiary {
             List.of(new ThornsEffect(2 * level))
     );
 
+    @Levels({1, 4, 5})
+    public static final MonsterCreator POULETTO = level -> {
+        Weaponry.WeaponCreator weaponCreator = () -> new Weapon("Pouletto", "A lively chicken nugget", 0,
+                List.of(new SingleTargetAttack("Bite", "Bite the enemy", 2, 0),
+                        new SingleTargetAttack("Kick", "Kick the enemy", 1, 0),
+                        new SingleTargetAttack("Peck", "Peck the enemy", 1, 0),
+                        AutoTargetAttack.create("Chicken Dance", "Dance like a chicken, very effective ! 10% chance to oneshot", 0, 3,
+                                List.of(new RandomChanceEffect(OneShotEffect::new, .1)), Fight::getEnemies)));
+
+        return new Monster("Pouletto",
+                level * 2,
+                0,
+                level - (level + 1) % 2,
+                0,
+                5 + level * 6,
+                2 * level + 3,
+                level,
+                weaponCreator.forge(),
+                MonsterAI.RANDOM
+        );
+    };
+
     private static final HashMap<Integer, ArrayList<MonsterCreator>> MONSTERS = new HashMap<>();
 
     static {
@@ -81,7 +109,7 @@ public class Bestiary {
                 randomLevel = Math.min(MONSTERS.size(), level + 1);
             }
         }
-        return MONSTERS.get(level).get((int) (Math.random() * MONSTERS.get(level).size())).spawn(randomLevel);
+        return Random.getRandomValue(MONSTERS.get(level)).spawn(randomLevel);
     }
 
     @FunctionalInterface

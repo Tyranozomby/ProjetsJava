@@ -70,7 +70,7 @@ public class Fight {
             doTurn(currentEntity);
 
             LOGGER.info("Turn " + turns + " ended.");
-            Game.UI_CALLBACKS.onTurnEnd();
+            Game.UI_CALLBACKS.onTurnEnd(this);
 
             List<Monster> deadMonsters = monsters.stream().filter(m -> !m.isAlive()).toList();
             playOrder.removeAll(deadMonsters);

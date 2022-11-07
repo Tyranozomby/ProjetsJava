@@ -1,5 +1,10 @@
 # Jeu
 
+> ⚠ Ce fichier contient une première ébauche du contenu du jeu.
+> Le jeu est susceptible de changer au cours du développement et ainsi ne pas correspondre à ce fichier. ⚠
+> 
+> Se fier au contenu du fichier [README.md](README.md) à la racine du projet.
+
 ## Début
 
 Création du perso

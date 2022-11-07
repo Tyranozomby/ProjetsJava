@@ -6,6 +6,7 @@ import game.engine.fight.Fight;
 import game.engine.fight.attacks.AutoTargetAttack;
 import game.engine.fight.attacks.SingleTargetAttack;
 import game.engine.items.Weapon;
+import utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class Weaponry {
     public static final WeaponCreator SPOON = () -> new Weapon("Spoon", "A beautiful and shiny spoon made out of pure raw iron", 5,
             List.of(new SingleTargetAttack("Fast swing", "Frenetically swing your spoon in hope to reach the enemy", 2, 0),
                     AutoTargetAttack.create("Spoon bending", "Make your spoon bend just by looking at it. May confuse the enemies", 0, 1,
-                            List.of(new RandomChanceEffect(ConfuseEffect::new, .75)), Fight::getEnemies)));
+                            List.of(new RandomChanceEffect(() -> new ConfuseEffect(2), .75)), Fight::getEnemies)));
 
     @Levels({1, 2, 3, 4, 5})
     public static final WeaponCreator KNIFE = () -> new Weapon("Knife", "A rusty round tip knife", 5,
@@ -47,7 +48,7 @@ public class Weaponry {
     @Levels({3, 4, 5})
     public static final WeaponCreator RUBIKS_CUBE = () -> new Weapon("Rubik's cube", "A 90s masterpiece whose solving can blow minds", 42,
             List.of(AutoTargetAttack.create("Solve", "Solve the Rubik's cube. Deals emotional damage to the enemies and might also confuse them", 0, 5,
-                    List.of(new RandomChanceEffect(ConfuseEffect::new, .4)), Fight::getEnemies)));
+                    List.of(new RandomChanceEffect(() -> new ConfuseEffect(Random.getRandomInt(2, 5)), .4)), Fight::getEnemies)));
 
     @Levels({2, 3, 4, 5})
     public static final WeaponCreator SHIELD = () -> new Weapon("Shield", "A simple but sturdy metal shield", 1,
@@ -83,7 +84,7 @@ public class Weaponry {
     }
 
     public static Weapon getRandomWeapon(int level) {
-        return WEAPONS.get(level).get((int) (Math.random() * WEAPONS.get(level).size())).forge();
+        return Random.getRandomValue(WEAPONS.get(level)).forge();
     }
 
     public static List<Weapon> getAll(int level) {
