@@ -41,14 +41,51 @@ import java.util.Scanner;
 
 public class ConsoleUI implements UICallbacks {
 
-    private final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         LogFormatter.initLogging();
 
-        Game game = new Game(new ConsoleUI());
+        try {
+            new Game(new ConsoleUI(),getPlayerClass(), getPlayerName()).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        game.start();
+    public static PlayerClass getPlayerClass() {
+        while (true) {
+            System.out.println("Choose a class :");
+            for (int i = 0; i < PlayerClass.values().length; i++) {
+                System.out.println((i + 1) + ". " + PlayerClass.values()[i]);
+            }
+
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                choice = 0;
+            }
+
+            if (choice > 0 && choice <= PlayerClass.values().length) {
+                return PlayerClass.values()[choice - 1];
+            } else {
+                System.err.println("Invalid choice");
+            }
+        }
+    }
+
+    public static String getPlayerName() {
+        while (true) {
+            System.out.println("Choose a name :");
+            String name = scanner.nextLine();
+            name = name.trim();
+            if (name.length() > 0) {
+                return name;
+            } else {
+                System.err.println("Invalid name");
+            }
+        }
     }
 
     @Override
@@ -456,43 +493,6 @@ public class ConsoleUI implements UICallbacks {
                 return Action.values()[choice - 1];
             } else {
                 System.err.println("Invalid choice");
-            }
-        }
-    }
-
-    @Override
-    public PlayerClass getPlayerClass() {
-        while (true) {
-            System.out.println("Choose a class :");
-            for (int i = 0; i < PlayerClass.values().length; i++) {
-                System.out.println((i + 1) + ". " + PlayerClass.values()[i]);
-            }
-
-            int choice;
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (Exception e) {
-                choice = 0;
-            }
-
-            if (choice > 0 && choice <= PlayerClass.values().length) {
-                return PlayerClass.values()[choice - 1];
-            } else {
-                System.err.println("Invalid choice");
-            }
-        }
-    }
-
-    @Override
-    public String getPlayerName() {
-        while (true) {
-            System.out.println("Choose a name :");
-            String name = scanner.nextLine();
-            name = name.trim();
-            if (name.length() > 0) {
-                return name;
-            } else {
-                System.err.println("Invalid name");
             }
         }
     }

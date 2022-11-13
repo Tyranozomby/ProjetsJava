@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static java.lang.System.exit;
-
 public class Game {
 
     private static final Logger LOGGER = Logger.getLogger(Game.class.getName());
@@ -29,17 +27,14 @@ public class Game {
 
     private final Player player;
 
-    public Game(UICallbacks uiCallbacks) {
+    public Game(UICallbacks uiCallbacks, PlayerClass playerClass, String playerName) throws IOException {
         UI_CALLBACKS = uiCallbacks;
 
         try {
             map = new Map("RPG/maps");
         } catch (IOException e) {
-            exit(1);
-            throw new RuntimeException(e);
+            throw new IOException("Failed to load map", e);
         }
-        PlayerClass playerClass = UI_CALLBACKS.getPlayerClass();
-        String playerName = UI_CALLBACKS.getPlayerName();
 
         int physicalDamage, magicalDamage, physicalDefense, magicalDefense, speed, maxHealth;
         Weapon defaultWeapon;
@@ -81,7 +76,7 @@ public class Game {
                 maxHealth = 20;
                 defaultWeapon = Weaponry.PLATE.forge();
             }
-            default -> throw new IllegalStateException("Unexpected value: " + playerClass);
+            default -> throw new IllegalArgumentException("Unexpected value: " + playerClass);
         }
 
         this.player = new Player(playerName, physicalDamage, magicalDamage, physicalDefense, magicalDefense, speed, maxHealth);

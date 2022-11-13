@@ -87,8 +87,4 @@ public interface UICallbacks {
     Direction getDirection(Map map);
 
     Action getAction(Player player);
-
-    PlayerClass getPlayerClass();
-
-    String getPlayerName();
 }
