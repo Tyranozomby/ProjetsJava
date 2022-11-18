@@ -461,7 +461,7 @@ public class ConsoleUI implements UICallbacks {
                 if (i == pos.getY() && j == pos.getX()) {
                     stringBuilder.append("\u001B[31m⬤\u001B[0m");
                 } else {
-                    stringBuilder.append(TileManager.getTileChar(tile.getClass()));
+                    stringBuilder.append(TileManager.getTileChar(tile));
                 }
             }
             stringBuilder.append("\n");

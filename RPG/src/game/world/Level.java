@@ -85,7 +85,7 @@ public class Level {
         toString.append("Map: ").append("\n");
         for (ArrayList<Tile> tileRow : tiles) {
             for (Tile tile : tileRow) {
-                toString.append(TileManager.getTileChar(tile.getClass()));
+                toString.append(TileManager.getTileChar(tile));
             }
             toString.append("\n");
         }

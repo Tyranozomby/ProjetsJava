@@ -2,9 +2,10 @@
  * Created by JFormDesigner on Thu Nov 10 15:39:28 CET 2022
  */
 
-package ui;
+package ui.swing;
 
 import game.PlayerClass;
+import ui.SwingUI;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -64,7 +65,10 @@ public class MainMenu extends JPanel {
                 throw new RuntimeException(ex);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Veuillez choisir une classe et un pseudo", "Erreur", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    bundle.getString("MainMenu.errorDialog.text"),
+                    bundle.getString("MainMenu.errorDialog.title"),
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

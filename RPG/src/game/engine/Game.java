@@ -88,62 +88,62 @@ public class Game {
     public void start() {
         LOGGER.info("Starting game");
         UI_CALLBACKS.onGameStart(map);
-
-        boolean end = false;
-        boolean victory = false;
-        while (!end) {
-            Action action = UI_CALLBACKS.getAction(player);
-
-            switch (action) {
-                case MOVE -> {
-                    Direction direction = UI_CALLBACKS.getDirection(map);
-                    if (direction != null) {
-                        Tile tile = map.move(direction);
-                        if (tile instanceof EndTile) {
-                            if (!map.goNextLevel()) {
-                                end = true;
-                                victory = true;
-                            }
-                        } else {
-                            tile.onStep(this, player);
-                        }
-                    }
-                }
-                case SHOP -> {
-                    Item item = UI_CALLBACKS.onShopOpen(player, map.getShopItems());
-                    if (item != null) {
-                        if (player.buy(item)) {
-                            UI_CALLBACKS.onItemBuy(item);
-                            map.getShopItems().remove(item);
-                        } else
-                            UI_CALLBACKS.onItemBuyFail(item);
-                    }
-                }
-                case INVENTORY -> {
-                    Item item = UI_CALLBACKS.onInventoryOpen(player);
-                    if (item != null) {
-                        if (item instanceof Weapon) {
-                            player.equipWeapon((Weapon) item);
-                        } else /*if (item instanceof Consumable)*/ {
-                            ((Consumable) item).consume(List.of(player), player);
-                        }
-                    }
-                }
-                case PROFILE -> UI_CALLBACKS.onProfileOpen(player);
-            }
-
-            if (!player.isAlive()) {
-                end = true;
-                victory = false;
-            }
-        }
-
-        LOGGER.info("Game ended");
-        UI_CALLBACKS.onGameEnd(victory);
+//
+//        boolean end = false;
+//        boolean victory = false;
+//        while (!end) {
+//            Action action = UI_CALLBACKS.getAction(player);
+//
+//            switch (action) {
+//                case MOVE -> {
+//                    Direction direction = UI_CALLBACKS.getDirection(map);
+//                    if (direction != null) {
+//                        Tile tile = map.move(direction);
+//                        if (tile instanceof EndTile) {
+//                            if (!map.goNextLevel()) {
+//                                end = true;
+//                                victory = true;
+//                            }
+//                        } else {
+//                            tile.onStep(this, player);
+//                        }
+//                    }
+//                }
+//                case SHOP -> {
+//                    Item item = UI_CALLBACKS.onShopOpen(player, map.getShopItems());
+//                    if (item != null) {
+//                        if (player.buy(item)) {
+//                            UI_CALLBACKS.onItemBuy(item);
+//                            map.getShopItems().remove(item);
+//                        } else
+//                            UI_CALLBACKS.onItemBuyFail(item);
+//                    }
+//                }
+//                case INVENTORY -> {
+//                    Item item = UI_CALLBACKS.onInventoryOpen(player);
+//                    if (item != null) {
+//                        if (item instanceof Weapon) {
+//                            player.equipWeapon((Weapon) item);
+//                        } else /*if (item instanceof Consumable)*/ {
+//                            ((Consumable) item).consume(List.of(player), player);
+//                        }
+//                    }
+//                }
+//                case PROFILE -> UI_CALLBACKS.onProfileOpen(player);
+//            }
+//
+//            if (!player.isAlive()) {
+//                end = true;
+//                victory = false;
+//            }
+//        }
+//
+//        LOGGER.info("Game ended");
+//        UI_CALLBACKS.onGameEnd(victory);
     }
 
 
-    public int getCurrentLevel() {
+    public int getLevelValue() {
         return map.getLevelValue();
     }
 

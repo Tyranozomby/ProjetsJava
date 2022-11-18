@@ -17,12 +17,15 @@ import game.engine.items.Item;
 import game.engine.items.Weapon;
 import game.world.Direction;
 import game.world.Map;
+import ui.swing.GamePanel;
+import ui.swing.MainMenu;
 import utils.LogFormatter;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 public class SwingUI implements UICallbacks {
 
@@ -64,6 +67,7 @@ public class SwingUI implements UICallbacks {
         frame.setContentPane(gamePanel);
         frame.setTitle("RPG - Jeu en cours");
         frame.revalidate();
+        gamePanel.requestFocusInWindow();
     }
 
     @Override

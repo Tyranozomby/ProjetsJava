@@ -16,7 +16,7 @@ public class ChestTile implements Tile {
             visited = true;
             player.addGold(Random.getRandomInt(3, 8));
 
-            Weapon randomWeapon = Weaponry.getRandomWeapon(game.getCurrentLevel());
+            Weapon randomWeapon = Weaponry.getRandomWeapon(game.getLevelValue());
             player.giveItem(randomWeapon);
         }
         game.getMap().removeCurrentTile();

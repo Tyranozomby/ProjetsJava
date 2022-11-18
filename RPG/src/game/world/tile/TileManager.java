@@ -15,7 +15,11 @@ public class TileManager {
     }
 
 
-    public static char getTileChar(Class<? extends Tile> tileClass) {
+    /**
+     * @param tile@return one of the following ' ', '*', 'B', 'C', 'S', 'E'
+     */
+    public static char getTileChar(Tile tile) {
+        Class<? extends Tile> tileClass = tile.getClass();
         return switch (tileClass.getSimpleName()) {
             case "EmptyTile" -> ' ';
             case "WallTile" -> '*';

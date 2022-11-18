@@ -23,18 +23,18 @@ public class BushTitle implements Tile {
     public void onStep(Game game, Player player) {
         if (Random.tryChance(actionProbability)) {
             if (Random.tryChance(monsterProbability)) {
-                if (game.getCurrentLevel() == 1 || Random.getRandomInt(1, 2) == 1) {
-                    game.battle(Bestiary.getRandomMonster(game.getCurrentLevel()));
+                if (game.getLevelValue() == 1 || Random.getRandomInt(1, 2) == 1) {
+                    game.battle(Bestiary.getRandomMonster(game.getLevelValue()));
                 } else {
-                    game.battle(Bestiary.getRandomMonster(game.getCurrentLevel()), Bestiary.getRandomMonster(game.getCurrentLevel()));
+                    game.battle(Bestiary.getRandomMonster(game.getLevelValue()), Bestiary.getRandomMonster(game.getLevelValue()));
                 }
             }
         } else {
             Item item;
             if (Random.tryChance(0.4)) {
-                item = Weaponry.getRandomWeapon(game.getCurrentLevel());
+                item = Weaponry.getRandomWeapon(game.getLevelValue());
             } else {
-                item = Brewery.getRandomConsumable(game.getCurrentLevel());
+                item = Brewery.getRandomConsumable(game.getLevelValue());
             }
             player.giveItem(item);
         }
