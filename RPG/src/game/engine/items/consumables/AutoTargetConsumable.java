@@ -22,9 +22,9 @@ public abstract class AutoTargetConsumable extends Consumable {
         };
     }
 
-    public void consume(List<Entity> entity, Entity from) {
-        super.consume(entity, from);
-    }
+//    public void consume(List<Entity> entity, Entity from) {
+//        super.consume(entity, from);
+//    }
 
     public abstract List<Entity> getTargets(Fight fight, Entity from);
 }

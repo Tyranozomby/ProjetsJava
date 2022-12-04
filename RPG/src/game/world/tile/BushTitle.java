@@ -8,13 +8,14 @@ import game.engine.entities.Player;
 import game.engine.items.Item;
 import utils.Random;
 
-public class BushTitle implements Tile {
+public class BushTitle extends Tile {
 
     private final double actionProbability;
 
     private final double monsterProbability;
 
-    public BushTitle(double actionProbability, double monsterProbability) {
+    public BushTitle(int x, int y, double actionProbability, double monsterProbability) {
+        super(x, y);
         this.actionProbability = actionProbability;
         this.monsterProbability = monsterProbability;
     }
@@ -28,15 +29,15 @@ public class BushTitle implements Tile {
                 } else {
                     game.battle(Bestiary.getRandomMonster(game.getLevelValue()), Bestiary.getRandomMonster(game.getLevelValue()));
                 }
-            }
-        } else {
-            Item item;
-            if (Random.tryChance(0.4)) {
-                item = Weaponry.getRandomWeapon(game.getLevelValue());
             } else {
-                item = Brewery.getRandomConsumable(game.getLevelValue());
+                Item item;
+                if (Random.tryChance(0.4)) {
+                    item = Weaponry.getRandomWeapon(game.getLevelValue());
+                } else {
+                    item = Brewery.getRandomConsumable(game.getLevelValue());
+                }
+                player.giveItem(item);
             }
-            player.giveItem(item);
         }
     }
 }

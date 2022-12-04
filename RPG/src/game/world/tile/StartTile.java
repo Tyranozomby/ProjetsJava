@@ -3,7 +3,11 @@ package game.world.tile;
 import game.engine.Game;
 import game.engine.entities.Player;
 
-public class StartTile implements Tile {
+public class StartTile extends Tile {
+
+    public StartTile(int x, int y) {
+        super(x, y);
+    }
 
     @Override
     public void onStep(Game game, Player player) {

@@ -27,13 +27,12 @@ public class Level {
         String[] order = {"Name", "Description", "Map"};
         int index = 0;
 
-        int mapIndex = 0;
+        int mapY = 0;
 
         StringBuilder nameBuilder = new StringBuilder();
         StringBuilder descriptionBuilder = new StringBuilder();
 
         for (String line : lines) {
-//            System.out.println(line);
             if (index < order.length && line.equals(order[index] + ":")) {
                 index++;
             } else if (index > 0) {
@@ -42,11 +41,11 @@ public class Level {
                     case "Description" -> descriptionBuilder.append(line).append("\n");
                     case "Map" -> {
                         tiles.add(new ArrayList<>());
-                        for (int i = 0; i < line.split("").length; i++) {
-                            char c = line.charAt(i);
-                            tiles.get(mapIndex).add(TileManager.makeTile(c));
+                        for (int x = 0; x < line.split("").length; x++) {
+                            char c = line.charAt(x);
+                            tiles.get(mapY).add(TileManager.makeTile(c, x, mapY));
                         }
-                        mapIndex++;
+                        mapY++;
                     }
                 }
             }
@@ -69,7 +68,7 @@ public class Level {
     public Position getStartTile() {
         for (int y = 0; y < tiles.size(); y++) {
             for (int x = 0; x < tiles.get(y).size(); x++) {
-                if (tiles.get(y).get(x) instanceof StartTile) {
+                if (getTile(x, y) instanceof StartTile) {
                     return new Position(x, y);
                 }
             }
@@ -90,5 +89,21 @@ public class Level {
             toString.append("\n");
         }
         return toString.toString();
+    }
+
+    public Tile getTile(int x, int y) {
+        return tiles.get(y).get(x);
+    }
+
+    public Tile getTile(Position playerPosition) {
+        return getTile(playerPosition.getX(), playerPosition.getY());
+    }
+
+    public int getHeight() {
+        return tiles.size();
+    }
+
+    public int getWidth() {
+        return tiles.stream().map(ArrayList::size).max(Integer::compareTo).orElse(0);
     }
 }

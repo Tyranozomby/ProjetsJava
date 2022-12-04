@@ -7,8 +7,8 @@ import game.engine.fight.Fight;
 import game.engine.items.Item;
 import game.engine.items.Weapon;
 import game.engine.items.consumables.Consumable;
-import game.world.Direction;
 import game.world.Map;
+import game.world.Position;
 import game.world.tile.EndTile;
 import game.world.tile.Tile;
 import utils.Random;
@@ -28,8 +28,6 @@ public class Game {
     private final Player player;
 
     public Game(UICallbacks uiCallbacks, PlayerClass playerClass, String playerName) throws IOException {
-        UI_CALLBACKS = uiCallbacks;
-
         try {
             map = new Map("RPG/maps");
         } catch (IOException e) {
@@ -83,63 +81,66 @@ public class Game {
         player.getInventory().addItem(defaultWeapon);
         player.equipWeapon(defaultWeapon);
         player.giveItem(Brewery.HEALTH_POTION.brew(1));
+
+        UI_CALLBACKS = uiCallbacks;
     }
 
     public void start() {
         LOGGER.info("Starting game");
         UI_CALLBACKS.onGameStart(map);
-//
-//        boolean end = false;
-//        boolean victory = false;
-//        while (!end) {
-//            Action action = UI_CALLBACKS.getAction(player);
-//
-//            switch (action) {
-//                case MOVE -> {
-//                    Direction direction = UI_CALLBACKS.getDirection(map);
-//                    if (direction != null) {
-//                        Tile tile = map.move(direction);
-//                        if (tile instanceof EndTile) {
-//                            if (!map.goNextLevel()) {
-//                                end = true;
-//                                victory = true;
-//                            }
-//                        } else {
-//                            tile.onStep(this, player);
-//                        }
-//                    }
-//                }
-//                case SHOP -> {
-//                    Item item = UI_CALLBACKS.onShopOpen(player, map.getShopItems());
-//                    if (item != null) {
-//                        if (player.buy(item)) {
-//                            UI_CALLBACKS.onItemBuy(item);
-//                            map.getShopItems().remove(item);
-//                        } else
-//                            UI_CALLBACKS.onItemBuyFail(item);
-//                    }
-//                }
-//                case INVENTORY -> {
-//                    Item item = UI_CALLBACKS.onInventoryOpen(player);
-//                    if (item != null) {
-//                        if (item instanceof Weapon) {
-//                            player.equipWeapon((Weapon) item);
-//                        } else /*if (item instanceof Consumable)*/ {
-//                            ((Consumable) item).consume(List.of(player), player);
-//                        }
-//                    }
-//                }
-//                case PROFILE -> UI_CALLBACKS.onProfileOpen(player);
-//            }
-//
-//            if (!player.isAlive()) {
-//                end = true;
-//                victory = false;
-//            }
-//        }
-//
-//        LOGGER.info("Game ended");
-//        UI_CALLBACKS.onGameEnd(victory);
+
+        boolean end = false;
+        boolean victory = false;
+        while (!end) {
+            Action action = UI_CALLBACKS.getAction(this);
+
+            if (action == null)
+                break;
+
+            if (action.type() instanceof Action.Move moveActionType) {
+                Position currentPosition = new Position(map.getPosition().getX(), map.getPosition().getY());
+                Tile tile = map.move(moveActionType);
+
+                if (currentPosition.getX() != map.getPosition().getX() || currentPosition.getY() != map.getPosition().getY()) {
+                    UI_CALLBACKS.onMove(map, tile);
+                    if (tile instanceof EndTile) {
+                        if (!map.goNextLevel()) {
+                            end = true;
+                            victory = true;
+                        }
+                    } else {
+                        tile.onStep(this, player);
+                    }
+                } else {
+                    UI_CALLBACKS.onInvalidMove();
+                }
+            } else if (action.type() instanceof Action.Shop shopActionType) {
+                Item item = ((Item) action.data());
+                if (shopActionType == Action.Shop.BUY) {
+                    if (player.buy(item)) {
+                        UI_CALLBACKS.onItemBuy(item);
+                    } else {
+                        UI_CALLBACKS.onItemBuyFail(item);
+                    }
+                }
+            } else if (action.type() instanceof Action.Inventory inventoryActionType) {
+                if (inventoryActionType == Action.Inventory.EQUIP) {
+                    Weapon weapon = ((Weapon) action.data());
+                    player.equipWeapon(weapon);
+                } else if (inventoryActionType == Action.Inventory.CONSUME) {
+                    Consumable consumable = ((Consumable) action.data());
+                    consumable.consume(List.of(player), player);
+                }
+            }
+
+            if (!player.isAlive()) {
+                end = true;
+                victory = false;
+            }
+        }
+
+        LOGGER.info("Game ended");
+        UI_CALLBACKS.onGameEnd(victory);
     }
 
 
@@ -168,5 +169,9 @@ public class Game {
 
     public Map getMap() {
         return map;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

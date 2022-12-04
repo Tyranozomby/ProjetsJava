@@ -26,7 +26,6 @@ import game.engine.items.Weapon;
 import game.engine.items.consumables.AutoTargetConsumable;
 import game.engine.items.consumables.Consumable;
 import game.engine.items.consumables.SingleTargetConsumable;
-import game.world.Direction;
 import game.world.Level;
 import game.world.Map;
 import game.world.Position;
@@ -47,7 +46,7 @@ public class ConsoleUI implements UICallbacks {
         LogFormatter.initLogging();
 
         try {
-            new Game(new ConsoleUI(),getPlayerClass(), getPlayerName()).start();
+            new Game(new ConsoleUI(), getPlayerClass(), getPlayerName()).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,8 +217,7 @@ public class ConsoleUI implements UICallbacks {
         System.out.println("Used " + item);
     }
 
-    @Override
-    public Item onInventoryOpen(Player player) {
+    public Action getInventoryAction(Player player) {
         System.out.println("Inventory opened : ");
         System.out.println("Weapons : " + player.getInventory().getWeapons());
         System.out.println("Consumables : " + player.getInventory().getConsumables(true));
@@ -241,9 +239,9 @@ public class ConsoleUI implements UICallbacks {
             if (choice == 0) {
                 break;
             } else if (choice == 1) {
-                return getConsumable(player.getInventory().getConsumables(true));
+                return new Action(Action.Inventory.CONSUME, getConsumable(player.getInventory().getConsumables(true)));
             } else if (choice == 2) {
-                return getWeapon(player.getInventory().getWeapons());
+                return new Action(Action.Inventory.EQUIP, getWeapon(player.getInventory().getWeapons()));
             } else {
                 System.err.println("Invalid choice");
             }
@@ -314,8 +312,7 @@ public class ConsoleUI implements UICallbacks {
         System.out.println("Unequipped weapon " + weapon);
     }
 
-    @Override
-    public Item onShopOpen(Player player, List<Item> shopItems) {
+    public Action getShopAction(Player player, List<Item> shopItems) {
         System.out.println("Shop opened");
         while (true) {
             System.out.println("Player has " + player.getGold() + " gold");
@@ -337,7 +334,7 @@ public class ConsoleUI implements UICallbacks {
             if (choice == 0) return null;
 
             if (choice > 0 && choice <= shopItems.size()) {
-                return shopItems.get(choice - 1);
+                return new Action(Action.Shop.BUY, shopItems.get(choice - 1));
             } else {
                 System.err.println("Invalid choice");
             }
@@ -354,7 +351,6 @@ public class ConsoleUI implements UICallbacks {
         System.err.println("Failed to buy " + item + "\nNot enough gold");
     }
 
-    @Override
     public void onProfileOpen(Player player) {
         System.out.println(player.getName() + "'s profile : ");
         System.out.println(player.getHealth() + "/" + player.getStat(Stats.MAX_HEALTH) + " hp");
@@ -398,8 +394,7 @@ public class ConsoleUI implements UICallbacks {
         }
     }
 
-    @Override
-    public Direction getDirection(Map map) {
+    public Action getMoveAction(Map map) {
         Level level = map.getCurrentLevel();
         Position pos = map.getPosition();
 
@@ -427,23 +422,23 @@ public class ConsoleUI implements UICallbacks {
 
             switch (choice) {
                 case 1 -> {
-                    if (pos.getY() > 0 && !(tiles.get(pos.getY() - 1).get(pos.getX()) instanceof WallTile))
-                        return Direction.UP;
+                    if (pos.getY() > 0 && !(level.getTile(pos.getX(), pos.getY() - 1) instanceof WallTile))
+                        return new Action(Action.Move.UP, null);
                     else System.err.println("You can't go this way");
                 }
                 case 2 -> {
-                    if (pos.getY() < tiles.size() - 1 && !(tiles.get(pos.getY() + 1).get(pos.getX()) instanceof WallTile))
-                        return Direction.DOWN;
+                    if (pos.getY() < tiles.size() - 1 && !(level.getTile(pos.getX(), pos.getY() + 1) instanceof WallTile))
+                        return new Action(Action.Move.DOWN, null);
                     else System.err.println("You can't go this way");
                 }
                 case 3 -> {
-                    if (pos.getX() > 0 && !(tiles.get(pos.getY()).get(pos.getX() - 1) instanceof WallTile))
-                        return Direction.LEFT;
+                    if (pos.getX() > 0 && !(level.getTile(pos.getX() - 1, pos.getY()) instanceof WallTile))
+                        return new Action(Action.Move.LEFT, null);
                     else System.err.println("You can't go this way");
                 }
                 case 4 -> {
-                    if (pos.getX() < tiles.get(0).size() - 1 && !(tiles.get(pos.getY()).get(pos.getX() + 1) instanceof WallTile))
-                        return Direction.RIGHT;
+                    if (pos.getX() < tiles.get(0).size() - 1 && !(level.getTile(pos.getX() + 1, pos.getY()) instanceof WallTile))
+                        return new Action(Action.Move.RIGHT, null);
                     else System.err.println("You can't go this way");
                 }
                 default -> System.err.println("Invalid choice");
@@ -470,17 +465,13 @@ public class ConsoleUI implements UICallbacks {
     }
 
     @Override
-    public Action getAction(Player player) {
+    public Action getAction(Game game) {
         while (true) {
             System.out.println("Choose an action :");
-            for (int i = 0; i < Action.values().length; i++) {
-                System.out.println((i + 1) + ". " + switch (Action.values()[i]) {
-                    case MOVE -> "Move";
-                    case INVENTORY -> "Open Inventory";
-                    case SHOP -> "Open Shop";
-                    case PROFILE -> "Show Profile";
-                });
-            }
+            System.out.println("1. Move");
+            System.out.println("2. Open Inventory");
+            System.out.println("3. Open Shop");
+            System.out.println("4. Show Profile");
 
             int choice;
             try {
@@ -489,12 +480,37 @@ public class ConsoleUI implements UICallbacks {
                 choice = 0;
             }
 
-            if (choice > 0 && choice <= Action.values().length) {
-                return Action.values()[choice - 1];
-            } else {
-                System.err.println("Invalid choice");
+            switch (choice) {
+                case 1 -> {
+                    Action action = getMoveAction(game.getMap());
+                    if (action != null)
+                        return action;
+                }
+                case 2 -> {
+                    Action action = getInventoryAction(game.getPlayer());
+                    if (action != null)
+                        return action;
+                }
+                case 3 -> {
+                    Action action = getShopAction(game.getPlayer(), game.getMap().getShopItems());
+                    if (action != null)
+                        return action;
+                }
+                case 4 -> onProfileOpen(game.getPlayer());
+                default -> System.err.println("Invalid choice");
             }
         }
+    }
+
+    @Override
+    public void onInvalidMove() {
+        System.err.println("You can't go this way");
+    }
+
+    @Override
+    public void onMove(Map map, Tile tile) {
+        String levelString = getLevelString(map.getCurrentLevel(), map.getPosition());
+        System.out.println(levelString);
     }
 
     private AttackFightAction getAttackFightAction(Player player, Fight fight) {

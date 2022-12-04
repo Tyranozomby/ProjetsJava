@@ -134,6 +134,14 @@ public class Fight {
         return monsters;
     }
 
+    public Entity getPlaying() {
+        return playOrder.get(currentEntityTurnIndex);
+    }
+
+    public int getTurn() {
+        return turns;
+    }
+
     enum FightWinner {
         PLAYER, MONSTERS, NONE
     }

@@ -6,9 +6,13 @@ import game.engine.entities.Player;
 import game.engine.items.Weapon;
 import utils.Random;
 
-public class ChestTile implements Tile {
+public class ChestTile extends Tile {
 
     private boolean visited = false;
+
+    public ChestTile(int x, int y) {
+        super(x, y);
+    }
 
     @Override
     public void onStep(Game game, Player player) {

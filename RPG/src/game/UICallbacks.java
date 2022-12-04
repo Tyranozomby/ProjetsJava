@@ -1,5 +1,6 @@
 package game;
 
+import game.engine.Game;
 import game.engine.effects.Effect;
 import game.engine.entities.Entity;
 import game.engine.entities.Monster;
@@ -9,10 +10,8 @@ import game.engine.fight.actions.FightAction;
 import game.engine.fight.attacks.Attack;
 import game.engine.items.Item;
 import game.engine.items.Weapon;
-import game.world.Direction;
 import game.world.Map;
-
-import java.util.List;
+import game.world.tile.Tile;
 
 public interface UICallbacks {
 
@@ -67,24 +66,22 @@ public interface UICallbacks {
     void onConsumableUse(Item item);
 
     // INVENTORY
-    Item onInventoryOpen(Player inventory);
 
     void onWeaponEquipped(Weapon weapon);
 
     void onWeaponUnequipped(Weapon weapon);
 
     // SHOP
-    Item onShopOpen(Player player, List<Item> shopItems);
 
     void onItemBuy(Item item);
 
     void onItemBuyFail(Item item);
 
-    void onProfileOpen(Player player);
-
     FightAction getFightAction(Player player, Fight fight);
 
-    Direction getDirection(Map map);
+    Action getAction(Game game);
 
-    Action getAction(Player player);
+    void onInvalidMove();
+
+    void onMove(Map map, Tile tile);
 }

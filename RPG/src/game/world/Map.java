@@ -1,9 +1,11 @@
 package game.world;
 
+import game.Action;
 import game.engine.Game;
 import game.engine.items.Item;
 import game.world.tile.EmptyTile;
 import game.world.tile.Tile;
+import game.world.tile.WallTile;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +27,6 @@ public class Map {
         if (mapFiles == null) {
             throw new IOException("No map files found");
         }
-
-        System.out.println(Arrays.toString(mapFiles));
 
         // Filter to keep only files with .map extension
         mapFiles = Arrays.stream(mapFiles)
@@ -80,19 +80,24 @@ public class Map {
     }
 
     public void removeCurrentTile() {
-        getCurrentLevel().getTiles().get(position.getY()).set(position.getX(), new EmptyTile());
+        ArrayList<Tile> row = getCurrentLevel().getTiles().get(position.getY());
+        row.set(position.getX(), new EmptyTile(row.get(position.getX()).getX(), row.get(position.getX()).getY()));
     }
 
     public Position getPosition() {
         return position;
     }
 
-    public Tile move(Direction direction) {
-        switch (direction) {
-            case UP -> position.moveUp();
-            case DOWN -> position.moveDown();
-            case LEFT -> position.moveLeft();
-            case RIGHT -> position.moveRight();
+    public Tile move(Action.Move direction) {
+        Level currentLevel = getCurrentLevel();
+        if (direction == Action.Move.UP && position.getY() > 0 && !(currentLevel.getTiles().get(position.getY() - 1).get(position.getX()) instanceof WallTile)) {
+            position.moveUp();
+        } else if (direction == Action.Move.DOWN && position.getY() < currentLevel.getTiles().size() - 1 && !(currentLevel.getTiles().get(position.getY() + 1).get(position.getX()) instanceof WallTile)) {
+            position.moveDown();
+        } else if (direction == Action.Move.LEFT && position.getX() > 0 && !(currentLevel.getTiles().get(position.getY()).get(position.getX() - 1) instanceof WallTile)) {
+            position.moveLeft();
+        } else if (direction == Action.Move.RIGHT && position.getX() < currentLevel.getTiles().get(position.getY()).size() - 1 && !(currentLevel.getTiles().get(position.getY()).get(position.getX() + 1) instanceof WallTile)) {
+            position.moveRight();
         }
 
         return getCurrentLevel().getTiles().get(position.getY()).get(position.getX());

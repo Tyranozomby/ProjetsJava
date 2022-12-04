@@ -35,6 +35,14 @@ public class RandomChanceEffect {
         }
     }
 
+    public Effect getEffect() {
+        return effectSupplier.get();
+    }
+
+    public double getChance() {
+        return chance;
+    }
+
     @Override
     public String toString() {
         Effect effect = effectSupplier.get();

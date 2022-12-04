@@ -16,6 +16,15 @@ public class Item {
         this.price = price;
     }
 
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public int getPrice() {
         return price;
     }

@@ -30,15 +30,25 @@ public class Player extends Entity {
     public void equipWeapon(Weapon weapon) {
         if (!getWeapon().equals(Weaponry.NOTHING.forge())) {
             inventory.addItem(getWeapon());
+
             LOGGER.info("Unequipped " + getWeapon());
+            if (Game.UI_CALLBACKS != null) {
+                Game.UI_CALLBACKS.onWeaponUnequipped(getWeapon());
+            }
         }
-        super.equipWeapon(weapon);
+
         if (weapon != null) {
+            setWeapon(weapon);
+
             if (!this.getInventory().contains(weapon)) {
                 LOGGER.warning(this + " equipped " + weapon + " that wasn't in his inventory.");
             }
             inventory.removeItem(weapon);
+
             LOGGER.info("Equipped " + weapon);
+            if (Game.UI_CALLBACKS != null) {
+                Game.UI_CALLBACKS.onWeaponEquipped(weapon);
+            }
         }
     }
 
@@ -67,9 +77,12 @@ public class Player extends Entity {
     }
 
     public void giveItem(Item item) {
-        LOGGER.info("Received new item :" + item);
-        Game.UI_CALLBACKS.onItemFound(item);
         inventory.addItem(item);
+
+        if (Game.UI_CALLBACKS != null) {
+            LOGGER.info("Received new item :" + item);
+            Game.UI_CALLBACKS.onItemFound(item);
+        }
     }
 
     public int getGold() {

@@ -52,13 +52,18 @@ public abstract class Entity {
      * @param newWeapon The new weapon to equip.
      */
     public void equipWeapon(Weapon newWeapon) {
-        if (equippedWeapon != null)
-            Game.UI_CALLBACKS.onWeaponUnequipped(equippedWeapon);
-
+        Weapon oldWeapon = equippedWeapon;
         equippedWeapon = newWeapon;
 
-        if (equippedWeapon != null)
-            Game.UI_CALLBACKS.onWeaponEquipped(equippedWeapon);
+        if (Game.UI_CALLBACKS != null) {
+            if (oldWeapon != null) {
+                Game.UI_CALLBACKS.onWeaponUnequipped(oldWeapon);
+            }
+
+            if (equippedWeapon != null) {
+                Game.UI_CALLBACKS.onWeaponEquipped(equippedWeapon);
+            }
+        }
     }
 
     public boolean isAlive() {
@@ -97,8 +102,8 @@ public abstract class Entity {
     }
 
     public void removeEffect(Effect effect) {
-        Game.UI_CALLBACKS.onEffectEnd(this, effect);
         effects.remove(effect);
+        Game.UI_CALLBACKS.onEffectEnd(this, effect);
     }
 
     /**
@@ -117,6 +122,7 @@ public abstract class Entity {
      * @param piercing       Whether the damage should ignore defense.
      */
     public void dealDamage(DamageInstance damageInstance, boolean piercing) {
+        LOGGER.warning("Dealing " + damageInstance + " piercing=" + piercing + " to " + this + ".");
         triggerEffect(BeforeDamageEffect.class, effect -> effect.beforeDamageApply(damageInstance));
 
         int physicalDamage = damageInstance.getPhysicalDamage(0);
@@ -146,15 +152,7 @@ public abstract class Entity {
         }
     }
 
-    /**
-     * Trigger all effects that implement the given interface.
-     *
-     * @param effectClass   The EffectTrigger interface. (e.g. {@link BeforeDamageEffect})
-     * @param effectTrigger The method to call on the effect. (e.g. {@link BeforeDamageEffect#beforeDamageApply(DamageInstance)})
-     * @return TODO
-     */
     public <T extends EffectTrigger, V> V triggerEffectWithReturn(Class<T> effectClass, Function<T, V> effectTrigger) {
-        LOGGER.warning(effects.toString());
         return List.copyOf(effects)
                 .stream()
                 .filter(effectClass::isInstance)
@@ -173,6 +171,10 @@ public abstract class Entity {
 
     public abstract FightAction getFightAction(Fight fight);
 
+    public HashSet<Effect> getEffects() {
+        return effects;
+    }
+
     public int getHealth() {
         return currentHealth;
     }
@@ -186,6 +188,10 @@ public abstract class Entity {
             return Weaponry.NOTHING.forge();
 
         return equippedWeapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        equippedWeapon = weapon;
     }
 
     public HashMap<Stats, Integer> getStats() {

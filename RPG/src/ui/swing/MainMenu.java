@@ -1,7 +1,3 @@
-/*
- * Created by JFormDesigner on Thu Nov 10 15:39:28 CET 2022
- */
-
 package ui.swing;
 
 import game.PlayerClass;
@@ -9,7 +5,10 @@ import ui.SwingUI;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -94,7 +93,6 @@ public class MainMenu extends JPanel {
         setLayout(new GridBagLayout());
 
         //---- titre ----
-//        titre.setText(bundle.getString("MainMenu.titre.text"));
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         add(titre, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0,
@@ -102,32 +100,27 @@ public class MainMenu extends JPanel {
                 new Insets(0, 0, 50, 0), 0, 0));
 
         //---- radioGuerrier ----
-//        radioGuerrier.setText(bundle.getString("MainMenu.radioGuerrier.text"));
         radioGuerrier.setSelected(true);
         add(radioGuerrier, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 50, 30), 0, 0));
 
         //---- radioTank ----
-//        radioTank.setText(bundle.getString("MainMenu.radioTank.text"));
         add(radioTank, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 50, 30), 0, 0));
 
         //---- radioVoleur ----
-//        radioVoleur.setText(bundle.getString("MainMenu.radioVoleur.text"));
         add(radioVoleur, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 50, 30), 0, 0));
 
         //---- radioMage ----
-//        radioMage.setText(bundle.getString("MainMenu.radioMage.text"));
         add(radioMage, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 50, 0), 0, 0));
 
         //---- pseudoLabel ----
-//        pseudoLabel.setText(bundle.getString("MainMenu.pseudoLabel.text"));
         add(pseudoLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 50, 30), 0, 0));
@@ -145,7 +138,6 @@ public class MainMenu extends JPanel {
         pseudoLabel.setLabelFor(pseudoField);
 
         //---- startButton ----
-//        startButton.setText(bundle.getString("MainMenu.startButton.text"));
         startButton.addActionListener(e -> startGame());
         add(startButton, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,

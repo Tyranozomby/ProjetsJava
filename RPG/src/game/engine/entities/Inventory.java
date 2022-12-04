@@ -5,6 +5,7 @@ import game.engine.items.Weapon;
 import game.engine.items.consumables.Consumable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Inventory {
@@ -19,6 +20,10 @@ public class Inventory {
 
     public void removeItem(Item item) {
         items.remove(item);
+    }
+
+    public ArrayList<Item> getAll() {
+        return new ArrayList<>(List.copyOf(items));
     }
 
     public ArrayList<Weapon> getWeapons() {

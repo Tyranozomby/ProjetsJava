@@ -15,19 +15,24 @@ import game.engine.fight.actions.FightAction;
 import game.engine.fight.attacks.Attack;
 import game.engine.items.Item;
 import game.engine.items.Weapon;
-import game.world.Direction;
 import game.world.Map;
+import game.world.tile.Tile;
 import ui.swing.GamePanel;
 import ui.swing.MainMenu;
 import utils.LogFormatter;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
+import java.util.ResourceBundle;
 
 public class SwingUI implements UICallbacks {
+
+    public static final Object actionLock = new Object();
+
+    private final ResourceBundle bundle;
 
     private final JFrame frame;
 
@@ -36,10 +41,12 @@ public class SwingUI implements UICallbacks {
     private Game game;
 
     public SwingUI() {
+        bundle = ResourceBundle.getBundle("strings", Locale.getDefault());
+
         MainMenu mainMenu = new MainMenu(this);
 
         frame = new JFrame("RPG - Création du personnage");
-        frame.setSize(1080, 720);
+        frame.setSize(1280, 720);
         frame.setContentPane(mainMenu);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -52,27 +59,34 @@ public class SwingUI implements UICallbacks {
 
         FlatDarculaLaf.setup();
         Locale.setDefault(Locale.ENGLISH);
+        UIManager.getDefaults().put("Component.arrowType", "chevron");
 
         new SwingUI();
     }
 
     public void startGame(PlayerClass playerClass, String name) throws IOException {
-        game = new Game(this, playerClass, name);
-        game.start();
+        new Thread(() -> {
+            try {
+                game = new Game(this, playerClass, name);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            game.start();
+        }).start();
     }
 
     @Override
     public void onGameStart(Map map) {
-        gamePanel = new GamePanel(this, game);
+        gamePanel = new GamePanel(game);
         frame.setContentPane(gamePanel);
-        frame.setTitle("RPG - Jeu en cours");
+        frame.setTitle(bundle.getString("SwingUI.title"));
         frame.revalidate();
         gamePanel.requestFocusInWindow();
     }
 
     @Override
     public void onGameEnd(boolean victory) {
-
+        System.out.println("Game ended");
     }
 
     @Override
@@ -82,27 +96,30 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onNextLevel(int level) {
-
+        gamePanel.getMapPanel().reload();
+        gamePanel.getShopPanel().reload();
     }
 
     @Override
     public void onFightStart(Fight fight) {
-
+        gamePanel.onFightStart(fight);
     }
 
     @Override
     public void onFightEnd() {
-
+        gamePanel.onFightEnd();
     }
 
     @Override
     public void onTurnStart(Entity entity, int turn) {
-
+        System.out.println("Turn " + turn + " - " + entity.getName());
+        gamePanel.getFightPanel().reload();
     }
 
     @Override
     public void onTurnEnd(Fight fight) {
-
+        System.out.println("Turn end");
+        gamePanel.getFightPanel().reload();
     }
 
     @Override
@@ -132,17 +149,21 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onAttack(Entity attacker, Entity receiver, Attack damage) {
-
+        System.out.println(attacker.getName() + " attacks " + receiver.getName() + " for " + damage.getPhysicalDamage() + " physical damage and " + damage.getMagicalDamage() + " magical damage");
+        gamePanel.getFightPanel().reload();
     }
 
     @Override
     public void onDamage(Entity receiver, int physicalDamage, int magicalDamage) {
-
+        System.out.println(receiver.getName() + " takes " + physicalDamage + " physical damage and " + magicalDamage + " magical damage");
+        gamePanel.getFightPanel().reload();
+        gamePanel.getPlayerPanel().reload();
     }
 
     @Override
     public void onHeal(Entity receiver, int heal) {
-
+        gamePanel.getFightPanel().reload();
+        gamePanel.getPlayerPanel().reload();
     }
 
     @Override
@@ -167,66 +188,98 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onItemFound(Item item) {
+        gamePanel.getInventoryPanel().reload();
 
+        // Open popup to show item
+        JOptionPane.showMessageDialog(frame, item.getName(), bundle.getString("SwingUI.itemFoundDialog.title"), JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void onGoldFound(int amount) {
+        gamePanel.getPlayerPanel().reload();
+        gamePanel.getShopPanel().reload();
 
+        // Open popup to show amount
+        JOptionPane.showMessageDialog(frame, amount, bundle.getString("SwingUI.goldFoundDialog.title"), JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void onConsumableUse(Item item) {
-
-    }
-
-    @Override
-    public Item onInventoryOpen(Player inventory) {
-        return null;
+        gamePanel.getInventoryPanel().reload();
+        gamePanel.getFightPanel().reload();
+        gamePanel.getPlayerPanel().reload();
     }
 
     @Override
     public void onWeaponEquipped(Weapon weapon) {
-
+        gamePanel.getPlayerPanel().reload();
+        gamePanel.getInventoryPanel().reload();
     }
 
     @Override
     public void onWeaponUnequipped(Weapon weapon) {
-
-    }
-
-    @Override
-    public Item onShopOpen(Player player, List<Item> shopItems) {
-        return null;
+        gamePanel.getPlayerPanel().reload();
+        gamePanel.getInventoryPanel().reload();
     }
 
     @Override
     public void onItemBuy(Item item) {
+        gamePanel.getShopPanel().reload();
+        gamePanel.getInventoryPanel().reload();
+        gamePanel.getPlayerPanel().reload();
 
+        // Open popup to show item
+        JOptionPane.showMessageDialog(frame, item.getName(), bundle.getString("SwingUI.itemBoughtDialog.title"), JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void onItemBuyFail(Item item) {
-
-    }
-
-    @Override
-    public void onProfileOpen(Player player) {
-
+        // TODO Shake the screen
+        System.out.println("Not enough gold");
     }
 
     @Override
     public FightAction getFightAction(Player player, Fight fight) {
-        return null;
+        synchronized (actionLock) {
+            while (gamePanel.getFightAction() == null) {
+                try {
+                    actionLock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        FightAction fightAction = gamePanel.getFightAction();
+        gamePanel.setFightAction(null);
+        return fightAction;
     }
 
     @Override
-    public Direction getDirection(Map map) {
-        return null;
+    public Action getAction(Game game) {
+        synchronized (actionLock) {
+            while (gamePanel.getAction() == null) {
+                try {
+                    actionLock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        Action action = gamePanel.getAction();
+        gamePanel.setAction(null);
+        return action;
     }
 
     @Override
-    public Action getAction(Player player) {
-        return null;
+    public void onInvalidMove() {
+        // TODO Shake the screen
+        System.out.println("Invalid move");
+    }
+
+    @Override
+    public void onMove(Map map, Tile tile) {
+        gamePanel.getMapPanel().reload();
     }
 }

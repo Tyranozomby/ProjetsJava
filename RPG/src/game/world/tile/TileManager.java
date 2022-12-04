@@ -2,21 +2,22 @@ package game.world.tile;
 
 public class TileManager {
 
-    public static Tile makeTile(char c) {
+    public static Tile makeTile(char c, int x, int y) {
         return switch (c) {
-            case ' ' -> new EmptyTile();
-            case '*' -> new WallTile();
-            case 'B' -> new BushTitle(.6, .9);
-            case 'C' -> new ChestTile();
-            case 'S' -> new StartTile();
-            case 'E' -> new EndTile();
+            case ' ' -> new EmptyTile(x, y);
+            case '*' -> new WallTile(x, y);
+            case 'B' -> new BushTitle(x, y, .4, .9);
+            case 'C' -> new ChestTile(x, y);
+            case 'S' -> new StartTile(x, y);
+            case 'E' -> new EndTile(x, y);
             default -> throw new IllegalArgumentException("Unknown tile type: " + c);
         };
     }
 
 
     /**
-     * @param tile@return one of the following ' ', '*', 'B', 'C', 'S', 'E'
+     * @param tile the tile to get the character for
+     * @return one of the following ' ', '*', 'B', 'C', 'S', 'E'
      */
     public static char getTileChar(Tile tile) {
         Class<? extends Tile> tileClass = tile.getClass();

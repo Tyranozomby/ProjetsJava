@@ -31,6 +31,14 @@ public abstract class Effect {
         this.description = description;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public void setEffectSource(Entity effectSource) {
         this.effectSource = effectSource;
     }
