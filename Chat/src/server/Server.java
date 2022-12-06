@@ -1,6 +1,6 @@
 package server;
 
-import both.Message;
+import util.Message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-public class Server extends LogFormatter {
+public class Server {
 
     public static final int DEFAULT_PORT = 5000;
 
@@ -111,7 +111,7 @@ public class Server extends LogFormatter {
             if (type == Message.Type.JOIN || type == Message.Type.LEAVE) {
                 id = Integer.parseInt(info);
             }
-            Message msg = new Message(info, type, id, LocalTime.now().toSecondOfDay());
+            Message msg = new Message(info, type, id, LocalTime.now().toNanoOfDay());
             // send serialized message
             ObjectOutputStream output = connection.getOutputStream();
             output.writeObject(msg);

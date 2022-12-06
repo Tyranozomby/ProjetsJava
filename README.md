@@ -15,3 +15,7 @@ Voir [README.md](FileReader/README.md) dans le dossier `FileReader` ([ici](FileR
 ## Projet 3 : RPG
 
 Voir [README.md](RPG/README.md) dans le dossier `RPG` ([ici](RPG))
+
+## Projet 4 : Chat
+
+Voir [README.md](Chat/README.md) dans le dossier `Chat` ([ici](Chat))

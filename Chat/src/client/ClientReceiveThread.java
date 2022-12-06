@@ -1,20 +1,23 @@
 package client;
 
-import both.Message;
+import util.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-public class ClientReceiveHandler extends Thread {
+public class ClientReceiveThread extends Thread {
 
     private final Socket socket;
 
     private final ObjectInputStream inputStream;
 
-    public ClientReceiveHandler(Socket socket, ObjectInputStream inputStream) {
+    private final MessageHandler messageHandler;
+
+    public ClientReceiveThread(Socket socket, ObjectInputStream inputStream, MessageHandler messageHandler) {
         this.socket = socket;
         this.inputStream = inputStream;
+        this.messageHandler = messageHandler;
     }
 
     @Override
@@ -23,10 +26,11 @@ public class ClientReceiveHandler extends Thread {
         try {
             while (!socket.isClosed()) {
                 Message message = (Message) inputStream.readObject();
-                MessagePrinter.print(message);
+                messageHandler.handle(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Server closed the connection");
+        } finally {
             this.interrupt();
         }
     }

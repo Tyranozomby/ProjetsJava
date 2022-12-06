@@ -10,7 +10,6 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
 public class LogFormatter extends Formatter {
-    // ANSI escape code
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_RED = "\u001B[31m";

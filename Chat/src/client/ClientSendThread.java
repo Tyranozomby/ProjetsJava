@@ -4,13 +4,13 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientSendHandler extends Thread {
+public class ClientSendThread extends Thread {
 
     private final Socket socket;
 
     private final DataOutputStream outputStream;
 
-    public ClientSendHandler(Socket socket, DataOutputStream outputStream) {
+    public ClientSendThread(Socket socket, DataOutputStream outputStream) {
         this.socket = socket;
         this.outputStream = outputStream;
     }
@@ -26,7 +26,8 @@ public class ClientSendHandler extends Thread {
                 outputStream.writeBytes(message.trim() + "\n");
             }
         } catch (Exception e) {
-            System.err.println("Server closed the connection");
+            throw new RuntimeException(e);
+        } finally {
             this.interrupt();
         }
     }

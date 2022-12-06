@@ -1,13 +1,13 @@
 package client;
 
-import both.Message;
+import util.Message;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class MessagePrinter {
+public class ConsoleMessageHandler implements MessageHandler {
 
-    public static void print(Message message) {
+    public void handle(Message message) {
         String time = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalTime.ofNanoOfDay(message.timestamp()));
         switch (message.type()) {
             case MESSAGE -> System.out.println("[" + time + "] - #" + message.id() + ": " + message.content());

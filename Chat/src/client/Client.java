@@ -11,8 +11,11 @@ public class Client {
 
     private final int port;
 
-    public Client(int port) {
+    private final MessageHandler messageHandler;
+
+    public Client(int port, MessageHandler messageHandler) {
         this.port = port;
+        this.messageHandler = messageHandler;
     }
 
     public static void main(String[] args) {
@@ -28,7 +31,7 @@ public class Client {
             System.out.println("No port number specified, using default port " + DEFAULT_PORT);
         }
 
-        new Client(port).connect();
+        new Client(port, new ConsoleMessageHandler()).connect();
     }
 
     private void connect() {
@@ -36,20 +39,21 @@ public class Client {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
 
-            Thread sendingHandler = new ClientSendHandler(socket, outputStream);
-            Thread receivingHandler = new ClientReceiveHandler(socket, inputStream);
+            Thread sendingHandler = new ClientSendThread(socket, outputStream);
+            Thread receivingHandler = new ClientReceiveThread(socket, inputStream, messageHandler);
 
             sendingHandler.start();
             receivingHandler.start();
 
-            // Keep the main thread alive until the client disconnects
-            sendingHandler.join();
+            // Keep the main thread alive until the connection is closed
             receivingHandler.join();
 
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Server closed the connection");
-        } finally {
-            System.err.println("Bye bye!");
+        } catch (IOException e) {
+            System.err.println("An error occurred while connecting to the server: " + e.getMessage());
+            System.exit(1);
+        } catch (InterruptedException ignored) {
         }
+        System.err.println("Bye bye!");
+        System.exit(1);
     }
 }

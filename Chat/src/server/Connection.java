@@ -1,6 +1,6 @@
 package server;
 
-import both.Message;
+import util.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
