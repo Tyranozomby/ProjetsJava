@@ -62,11 +62,10 @@ public class Server {
                 LOGGER.info("Client #" + clientCount + " connected to server (total: " + clients.size() + ")");
 
                 // Send welcome message to the client and inform the other clients
-                sendTo(connection, null, Message.Type.WELCOME);
+                sendTo(connection, null, Message.Type.WELCOME, 0);
                 broadcast(Integer.toString(clientCount), connection, Message.Type.JOIN);
             }
         } catch (IOException e) {
-//            System.err.println("server.Server exception: " + e.getMessage());
             LOGGER.severe("Server exception: " + e.getMessage());
         }
     }
@@ -100,18 +99,21 @@ public class Server {
     public void broadcast(String info, Connection excludedConnection, Message.Type type) {
         for (Connection connection : clients.values()) {
             if (connection != excludedConnection) {
-                sendTo(connection, info, type);
+                sendTo(connection, info, type, getClientId(excludedConnection));
             }
         }
     }
 
-    private void sendTo(Connection connection, String info, Message.Type type) {
+    private void sendTo(Connection connection, String info, Message.Type type, int sourceId) {
         try {
-            int id = getClientId(connection);
-            if (type == Message.Type.JOIN || type == Message.Type.LEAVE) {
-                id = Integer.parseInt(info);
-            }
+            int id = switch (type) {
+                case MESSAGE -> sourceId;
+                case JOIN, LEAVE -> Integer.parseInt(info);
+                case WELCOME -> getClientId(connection);
+            };
+
             Message msg = new Message(info, type, id, LocalTime.now().toNanoOfDay());
+
             // send serialized message
             ObjectOutputStream output = connection.getOutputStream();
             output.writeObject(msg);

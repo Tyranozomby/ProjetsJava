@@ -39,11 +39,11 @@ public class Client {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
 
-            Thread sendingHandler = new ClientSendThread(socket, outputStream);
             Thread receivingHandler = new ClientReceiveThread(socket, inputStream, messageHandler);
+            Thread sendingHandler = new ClientSendThread(socket, outputStream);
 
-            sendingHandler.start();
             receivingHandler.start();
+            sendingHandler.start();
 
             // Keep the main thread alive until the connection is closed
             receivingHandler.join();
