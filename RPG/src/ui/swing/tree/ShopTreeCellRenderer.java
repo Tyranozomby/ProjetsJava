@@ -10,6 +10,7 @@ import javax.swing.border.Border;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import java.awt.Component;
+import java.awt.Font;
 
 public class ShopTreeCellRenderer extends DefaultTreeCellRenderer {
 
@@ -25,10 +26,12 @@ public class ShopTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     @Override
+    @SuppressWarnings("DuplicatedCode")
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
 
         setIcon(null);
+        setFont(new Font("Segoe UI", Font.PLAIN, 14));
         setBorder(border);
 
         if (fightMode || !canBeBought((TreeNode) value)) {
@@ -43,8 +46,6 @@ public class ShopTreeCellRenderer extends DefaultTreeCellRenderer {
             setEnabled(!fightMode);
         } else if (value instanceof ItemNode itemNode) {
             setText(itemNode.getItem().getName() + " | " + itemNode.getItem().getDescription() + " (" + itemNode.getItem().getPrice() + " gold)");
-        } else if (value instanceof DescriptionNode descriptionNode) {
-            setText(descriptionNode.getDescription());
         } else if (value instanceof EffectNode effectNode) {
             Effect effect = effectNode.getEffect().getEffect();
             setText(effect.getName() + " | " + effect.getDescription() + " (" + effectNode.getEffect().getChance() * 100 + "%)");

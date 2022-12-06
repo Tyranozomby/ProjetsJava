@@ -53,7 +53,10 @@ public abstract class Entity {
      */
     public void equipWeapon(Weapon newWeapon) {
         Weapon oldWeapon = equippedWeapon;
+
         equippedWeapon = newWeapon;
+        LOGGER.info(this + " unequipped " + oldWeapon + " and equipped " + newWeapon);
+
 
         if (Game.UI_CALLBACKS != null) {
             if (oldWeapon != null) {
@@ -122,7 +125,6 @@ public abstract class Entity {
      * @param piercing       Whether the damage should ignore defense.
      */
     public void dealDamage(DamageInstance damageInstance, boolean piercing) {
-        LOGGER.warning("Dealing " + damageInstance + " piercing=" + piercing + " to " + this + ".");
         triggerEffect(BeforeDamageEffect.class, effect -> effect.beforeDamageApply(damageInstance));
 
         int physicalDamage = damageInstance.getPhysicalDamage(0);

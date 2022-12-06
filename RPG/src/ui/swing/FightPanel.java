@@ -2,6 +2,7 @@ package ui.swing;
 
 import game.Stats;
 import game.engine.effects.Effect;
+import game.engine.effects.RandomChanceEffect;
 import game.engine.entities.Entity;
 import game.engine.entities.Monster;
 import game.engine.entities.Player;
@@ -15,6 +16,7 @@ import game.engine.fight.attacks.SingleTargetAttack;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,61 +24,41 @@ public class FightPanel extends JPanel {
 
     private final GamePanel gamePanel;
 
+    private final HashMap<Effect, JLabel> waitingEffects = new HashMap<>();
+
     private Fight fight = null;
 
     private Monster monster1;
 
     private Monster monster2;
 
-    private Player player;
-
-    private JLabel monsterLabel1;
-
-    private JLabel monsterLabel2;
-
-    private JProgressBar monsterLife1;
-
-    private JProgressBar monsterLife2;
-
-    private JPanel effectsPanel1;
-
-    private JPanel effectsPanel2;
-
-    private JLabel turnIndicator;
-
     private JPanel centralPanel;
-
-    private JLabel turnLabel;
-
-    private JPanel playerEffectsPanel;
-
-    private JProgressBar playerLife;
 
     public FightPanel(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
     private void initComponents() {
-        monsterLabel1 = new JLabel();
-        monsterLabel2 = new JLabel();
+        JLabel monsterLabel1 = new JLabel();
+        JLabel monsterLabel2 = new JLabel();
 
-        monsterLife1 = new JProgressBar();
-        monsterLife2 = new JProgressBar();
+        JProgressBar monsterLife1 = new JProgressBar();
+        JProgressBar monsterLife2 = new JProgressBar();
 
-        effectsPanel1 = new JPanel();
-        effectsPanel2 = new JPanel();
+        JPanel effectsPanel1 = new JPanel();
+        JPanel effectsPanel2 = new JPanel();
 
-        turnIndicator = new JLabel();
+        JLabel turnIndicator = new JLabel();
 
         centralPanel = new JPanel();
 
-        turnLabel = new JLabel();
+        JLabel turnLabel = new JLabel();
 
-        playerEffectsPanel = new JPanel();
-        playerLife = new JProgressBar();
+        JPanel playerEffectsPanel = new JPanel();
+        JProgressBar playerLife = new JProgressBar();
 
         boolean twoMonsters = fight.getMonsters().size() > 1;
-        player = fight.getPlayer();
+        Player player = fight.getPlayer();
         monster1 = fight.getMonsters().get(0);
         monster2 = twoMonsters ? fight.getMonsters().get(1) : null;
 
@@ -246,6 +228,7 @@ public class FightPanel extends JPanel {
             removeAll();
             initComponents();
             revalidate();
+            repaint();
         }
     }
 
@@ -296,5 +279,65 @@ public class FightPanel extends JPanel {
 
             return target.get();
         }
+    }
+
+    public void setAttack(Attack attack, Entity attacker, Entity receiver) {
+        centralPanel.removeAll();
+        waitingEffects.clear();
+
+        JLabel attackLabel = new JLabel(attack.getName());
+        attackLabel.setToolTipText(attack.getDescription());
+        attackLabel.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        attackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        centralPanel.add(attackLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0), 0, 0));
+
+        int physicalDamage = Math.max(0, attack.getPhysicalDamage() + attacker.getStat(Stats.PHYSICAL_DAMAGE) - receiver.getStat(Stats.PHYSICAL_DEFENSE));
+        int magicalDamage = Math.max(0, attack.getMagicalDamage() + attacker.getStat(Stats.MAGICAL_DAMAGE) - receiver.getStat(Stats.MAGICAL_DEFENSE));
+
+        JLabel damageLabel;
+        if (physicalDamage == 0 && magicalDamage == 0) {
+            damageLabel = new JLabel("No damage");
+        } else if (physicalDamage == 0) {
+            damageLabel = new JLabel("Magical: " + magicalDamage + " = Total: " + magicalDamage);
+        } else if (magicalDamage == 0) {
+            damageLabel = new JLabel("Physical: " + physicalDamage + " = Total: " + physicalDamage);
+        } else {
+            damageLabel = new JLabel("Physical: " + physicalDamage + " + Magical: " + magicalDamage + " = Total: " + (physicalDamage + magicalDamage));
+        }
+
+        damageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        damageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        centralPanel.add(damageLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0), 0, 0));
+
+        List<RandomChanceEffect> effects = attack.getEffects();
+        for (int i = 0; i < effects.size(); i++) {
+            RandomChanceEffect effect = effects.get(i);
+            JLabel effectLabel = new JLabel(effect.getEffect().getName() + " (" + effect.getChance() * 100 + "%)");
+            effectLabel.setToolTipText(effect.getEffect().getDescription());
+            effectLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+            effectLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+            waitingEffects.put(effect.getEffect(), effectLabel);
+
+            centralPanel.add(effectLabel, new GridBagConstraints(0, 2 + i, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
+        }
+
+        revalidate();
+    }
+
+    public void setEffectSuccess(Effect effect) {
+        JLabel effectLabel = waitingEffects.get(effect);
+        effectLabel.setText(effectLabel.getText() + " - Success");
+        effectLabel.setForeground(Color.GREEN);
+
+        revalidate();
     }
 }

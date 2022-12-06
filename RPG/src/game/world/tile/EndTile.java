@@ -11,6 +11,7 @@ public class EndTile extends Tile {
 
     @Override
     public void onStep(Game game, Player player) {
-        Game.UI_CALLBACKS.onEndTileReached();
+//        Game.UI_CALLBACKS.onEndTileReached();
+        Game.UI_CALLBACKS.onEndTileReached(game.getMap().getLevelValue() == game.getMap().getLevelCount());
     }
 }

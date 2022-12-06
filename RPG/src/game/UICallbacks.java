@@ -20,7 +20,7 @@ public interface UICallbacks {
 
     void onGameEnd(boolean victory);
 
-    void onEndTileReached();
+    void onEndTileReached(boolean isEnd);
 
     void onNextLevel(int level);
 
@@ -60,6 +60,8 @@ public interface UICallbacks {
 
     // ITEM
     void onItemFound(Item item);
+
+    void onItemRemoved(Item item);
 
     void onGoldFound(int amount);
 

@@ -20,7 +20,7 @@ public class ChestTile extends Tile {
             visited = true;
             player.addGold(Random.getRandomInt(3, 8));
 
-            Weapon randomWeapon = Weaponry.getRandomWeapon(game.getLevelValue());
+            Weapon randomWeapon = Weaponry.getRandomWeapon(game.getMap().getLevelValue());
             player.giveItem(randomWeapon);
         }
         game.getMap().removeCurrentTile();

@@ -19,6 +19,6 @@ public class WeaponDestroy extends Effect implements InstantEffect {
             ((Player) effectSource).getInventory().removeItem(weapon);
         }
 
-        effectSource.removeEffect(this);
+        thisEntity.removeEffect(this);
     }
 }

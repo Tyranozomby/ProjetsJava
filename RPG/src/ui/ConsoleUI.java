@@ -104,7 +104,7 @@ public class ConsoleUI implements UICallbacks {
     }
 
     @Override
-    public void onEndTileReached() {
+    public void onEndTileReached(boolean isEnd) {
         System.out.println("End tile reached");
     }
 
@@ -205,6 +205,11 @@ public class ConsoleUI implements UICallbacks {
     @Override
     public void onItemFound(Item item) {
         System.out.println("Found item : " + item);
+    }
+
+    @Override
+    public void onItemRemoved(Item item) {
+        System.out.println("Lost item : " + item);
     }
 
     @Override

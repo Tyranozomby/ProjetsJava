@@ -102,4 +102,8 @@ public class Map {
 
         return getCurrentLevel().getTiles().get(position.getY()).get(position.getX());
     }
+
+    public int getLevelCount() {
+        return levels.length;
+    }
 }

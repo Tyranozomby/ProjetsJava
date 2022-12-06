@@ -7,6 +7,7 @@ import game.Stats;
 import game.UICallbacks;
 import game.engine.Game;
 import game.engine.effects.Effect;
+import game.engine.effects.interfaces.InstantEffect;
 import game.engine.entities.Entity;
 import game.engine.entities.Monster;
 import game.engine.entities.Player;
@@ -21,9 +22,7 @@ import ui.swing.GamePanel;
 import ui.swing.MainMenu;
 import utils.LogFormatter;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -64,7 +63,7 @@ public class SwingUI implements UICallbacks {
         new SwingUI();
     }
 
-    public void startGame(PlayerClass playerClass, String name) throws IOException {
+    public void startGame(PlayerClass playerClass, String name) {
         new Thread(() -> {
             try {
                 game = new Game(this, playerClass, name);
@@ -86,12 +85,23 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onGameEnd(boolean victory) {
-        System.out.println("Game ended");
+        String message = victory ? bundle.getString("SwingUI.victory") : bundle.getString("SwingUI.defeat");
+
+        JLabel label = new JLabel(message);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+
+        JOptionPane.showMessageDialog(frame, label, "Game Over", JOptionPane.WARNING_MESSAGE);
+
+        frame.dispose();
+        System.exit(0);
     }
 
     @Override
-    public void onEndTileReached() {
-
+    public void onEndTileReached(boolean isEnd) {
+        if (!isEnd) {
+            JOptionPane.showMessageDialog(frame, bundle.getString("SwingUI.endTileReached"));
+        }
     }
 
     @Override
@@ -112,13 +122,19 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onTurnStart(Entity entity, int turn) {
-        System.out.println("Turn " + turn + " - " + entity.getName());
         gamePanel.getFightPanel().reload();
     }
 
     @Override
     public void onTurnEnd(Fight fight) {
-        System.out.println("Turn end");
+        // wait for a second if it's a monster turn
+        if (fight.getPlaying() instanceof Monster) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         gamePanel.getFightPanel().reload();
     }
 
@@ -129,7 +145,7 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onMonsterDeath(Monster monster) {
-
+        JOptionPane.showMessageDialog(frame, bundle.getString("SwingUI.monsterDeath") + " " + monster.getName() + " (lvl " + monster.getLevel() + ")");
     }
 
     @Override
@@ -139,24 +155,30 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onFightDefeat() {
-
+        JOptionPane.showMessageDialog(frame, bundle.getString("SwingUI.fightLost.text"), bundle.getString("SwingUI.fightLost.title"), JOptionPane.WARNING_MESSAGE);
     }
 
     @Override
     public void onStatUpgrade(Stats stat, int amount) {
-
+        gamePanel.getPlayerPanel().reload();
     }
 
     @Override
     public void onAttack(Entity attacker, Entity receiver, Attack damage) {
-        System.out.println(attacker.getName() + " attacks " + receiver.getName() + " for " + damage.getPhysicalDamage() + " physical damage and " + damage.getMagicalDamage() + " magical damage");
-        gamePanel.getFightPanel().reload();
+        gamePanel.getFightPanel().setAttack(damage, attacker, receiver);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDamage(Entity receiver, int physicalDamage, int magicalDamage) {
-        System.out.println(receiver.getName() + " takes " + physicalDamage + " physical damage and " + magicalDamage + " magical damage");
-        gamePanel.getFightPanel().reload();
+        if (receiver instanceof Player) {
+            vibrate(true);
+        }
         gamePanel.getPlayerPanel().reload();
     }
 
@@ -168,22 +190,43 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onEffectApplied(Entity receiver, Effect effect) {
-
+        gamePanel.getFightPanel().setEffectSuccess(effect);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onEffectFailedApply(Entity receiver, Effect effect) {
-
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onEffectActivation(Effect effect) {
+        System.out.println("Effect activation");
+        if (!(effect instanceof InstantEffect)) {
+            JOptionPane.showMessageDialog(frame, effect.getName() + " activated");
 
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onEffectEnd(Entity entity, Effect effect) {
-
+        if (!(effect instanceof InstantEffect)) {
+            JOptionPane.showMessageDialog(frame, effect.getName() + " ended on " + entity.getName());
+            gamePanel.getFightPanel().reload();
+        }
     }
 
     @Override
@@ -192,6 +235,11 @@ public class SwingUI implements UICallbacks {
 
         // Open popup to show item
         JOptionPane.showMessageDialog(frame, item.getName(), bundle.getString("SwingUI.itemFoundDialog.title"), JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
+    public void onItemRemoved(Item item) {
+        gamePanel.getInventoryPanel().reload();
     }
 
     @Override
@@ -218,6 +266,7 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onWeaponUnequipped(Weapon weapon) {
+        System.out.println(game.getPlayer().getInventory());
         gamePanel.getPlayerPanel().reload();
         gamePanel.getInventoryPanel().reload();
     }
@@ -234,8 +283,7 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onItemBuyFail(Item item) {
-        // TODO Shake the screen
-        System.out.println("Not enough gold");
+        vibrate(false);
     }
 
     @Override
@@ -274,12 +322,33 @@ public class SwingUI implements UICallbacks {
 
     @Override
     public void onInvalidMove() {
-        // TODO Shake the screen
-        System.out.println("Invalid move");
+        vibrate(false);
     }
 
     @Override
     public void onMove(Map map, Tile tile) {
         gamePanel.getMapPanel().reload();
+    }
+
+    public void vibrate(boolean small) {
+        int VIBRATION_LENGTH = small ? 2 : 5;
+        int VIBRATION_VELOCITY = small ? 2 : 5;
+
+        try {
+            final int originalX = frame.getLocationOnScreen().x;
+            final int originalY = frame.getLocationOnScreen().y;
+            for (int i = 0; i < VIBRATION_LENGTH; i++) {
+                Thread.sleep(10);
+                frame.setLocation(originalX, originalY + VIBRATION_VELOCITY);
+                Thread.sleep(10);
+                frame.setLocation(originalX, originalY - VIBRATION_VELOCITY);
+                Thread.sleep(10);
+                frame.setLocation(originalX + VIBRATION_VELOCITY, originalY);
+                Thread.sleep(10);
+                frame.setLocation(originalX, originalY);
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
     }
 }

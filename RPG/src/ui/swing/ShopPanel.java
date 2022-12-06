@@ -63,14 +63,10 @@ public class ShopPanel extends JPanel {
 
         // Get the first node and open its children
         Object root = tree.getModel().getRoot();
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode) tree.getModel().getChild(root, 0);
-        DefaultMutableTreeNode child2 = (DefaultMutableTreeNode) tree.getModel().getChild(root, 1);
-        // Print path of child
-        TreePath path = new TreePath(child.getPath());
-        TreePath path2 = new TreePath(child2.getPath());
-        // Expand the path
-        tree.expandPath(path);
-        tree.expandPath(path2);
+        for (int i = 0; i < tree.getModel().getChildCount(root); i++) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) tree.getModel().getChild(root, i);
+            tree.expandPath(new TreePath(child.getPath()));
+        }
 
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);

@@ -4,11 +4,11 @@ import java.util.Objects;
 
 public class Item {
 
-    protected String name;
+    protected final String name;
 
-    protected String description;
+    protected final String description;
 
-    protected int price;
+    protected final int price;
 
     public Item(String name, String description, int price) {
         this.name = name;

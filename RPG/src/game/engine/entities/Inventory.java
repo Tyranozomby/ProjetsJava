@@ -1,5 +1,6 @@
 package game.engine.entities;
 
+import game.engine.Game;
 import game.engine.items.Item;
 import game.engine.items.Weapon;
 import game.engine.items.consumables.Consumable;
@@ -19,6 +20,9 @@ public class Inventory {
     }
 
     public void removeItem(Item item) {
+        if (Game.UI_CALLBACKS != null) {
+            Game.UI_CALLBACKS.onItemRemoved(item);
+        }
         items.remove(item);
     }
 

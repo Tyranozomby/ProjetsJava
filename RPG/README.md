@@ -13,13 +13,28 @@ java RPG/ui/<ui>
 Deux interfaces utilisateurs sont disponibles :
 
 - `ConsoleUI` : interface en ligne de commande ([ici](src/ui/ConsoleUI.java))
-- `SwingUI` : interface graphique Swing __*(À venir)*__
+- `SwingUI` : interface graphique Swing ([ici](src/ui/SwingUI.java))
+
+#### ConsoleUI
 
 L'interface en ligne de commande est intentionnellement moche et peu pratique. Elle est là pour tester le jeu et pour
 montrer que l'interface graphique est possible.
 Cependant, elle est complètement fonctionnelle.
 
-L'interface graphique Swing est en cours de développement.
+#### SwingUI
+
+L'interface graphique Swing est plus jolie et plus pratique. Elle est aussi complètement fonctionnelle.
+
+Pour se déplacer, il suffit de cliquer sur une case adjacente.
+
+Lors d'un combat, il faut cliquer sur l'attaque à utiliser.
+
+Pour utiliser un objet, faire un clic droit sur celui-ci dans l'inventaire. Acheter un objet fonctionne de la même
+manière.
+
+Je comptais initialement ajouter un système de traduction, mais il m'aurait fallu aussi changer toutes les chaînes de
+caractères dans le moteur. J'ai cependant utilisé des bundles pour les chaînes de caractères de l'interface graphique
+mais la langue est bloquée en anglais.
 
 ## Déroulement du jeu
 
@@ -56,11 +71,11 @@ Différentes actions sont possibles pour y arriver :
 
 Chaque niveau est composé de différents types de cases :
 
-- `*` : Mur → impossible de passer dessus
-- ` ` : Sol
-- `E` : Sortie → fin du niveau/du jeu
-- `B` : Buisson → peut cacher un ennemi et dans de rare cas, un objet
-- `C` : Coffre → contient de l'or et une arme aléatoire
+- `*` : Mur → impossible de passer dessus **(noir)**
+- ` ` : Sol **(vert)**
+- `E` : Sortie → fin du niveau/du jeu **(blanc)**
+- `B` : Buisson → peut cacher un ennemi et dans de rare cas, un objet **(jaune)**
+- `C` : Coffre → contient de l'or et une arme aléatoire **(bleu)**
 
 En cas de rencontre avec un ennemi, un combat débute.
 
@@ -96,7 +111,7 @@ Exemples d'ennemis :
 
 ### Objets
 
-Tout comme les ennemis, les objets sont plus puissants à chaque niveau.
+Tout comme les ennemis, les objets sont plus efficaces à chaque niveau.
 
 #### Consommables
 

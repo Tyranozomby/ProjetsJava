@@ -143,11 +143,6 @@ public class Game {
         UI_CALLBACKS.onGameEnd(victory);
     }
 
-
-    public int getLevelValue() {
-        return map.getLevelValue();
-    }
-
     public void battle(Monster randomMonster) {
         new Fight(player, randomMonster).doFight();
         handleFightEnd(List.of(randomMonster));

@@ -44,21 +44,11 @@ public class GamePanel extends JPanel {
         shopPanel = new ShopPanel(game.getMap().getShopItems(), this, player);
 
         //======== this ========
-        setBorder(new EmptyBorder(50, 0, 50, 50));
+        setBorder(new EmptyBorder(10, 10, 10, 10));
         setLayout(new GridBagLayout());
-        ((GridBagLayout) getLayout()).columnWeights = new double[]{1.0, 0.6};
+//        ((GridBagLayout) getLayout()).columnWeights = new double[]{1.0, 1.0};
 //        ((GridBagLayout) getLayout()).columnWidths = new int[]{600, 600};
-        ((GridBagLayout) getLayout()).rowWeights = new double[]{0.2, 1.0};
-
-        setFocusable(true);
-        // TODO move with arrow keys and zqsd or wasd
-        // Need to constantly have focus
-//        addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                System.out.println(e.getKeyChar());
-//            }
-//        });
+//        ((GridBagLayout) getLayout()).rowWeights = new double[]{1.0, 1.0};
 
         //======== Map/Fight ========
         JPanel mapFightPanel = new JPanel();
@@ -75,18 +65,23 @@ public class GamePanel extends JPanel {
         mapFightScrollPane.setBorder(null);
         mapFightScrollPane.getVerticalScrollBar().setUnitIncrement(12);
         mapFightScrollPane.getHorizontalScrollBar().setUnitIncrement(12);
+        mapFightScrollPane.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight()));
+        mapFightScrollPane.setMinimumSize(new Dimension(this.getWidth() / 2, this.getHeight()));
+        mapFightScrollPane.setMaximumSize(new Dimension(this.getWidth() / 2, this.getHeight()));
 
-        this.add(mapFightScrollPane, new GridBagConstraints(0, 0, 1, 2, 0.0, 0.0,
+        this.add(mapFightScrollPane, new GridBagConstraints(0, 0, 1, 2, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
 
         //---- playerPanel ----
-        this.add(playerPanel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+        playerPanel.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() / 5 * 2));
+        this.add(playerPanel, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.4,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 20, 20));
 
         //======== TabPanel ========
         JTabbedPane tabPanel = new JTabbedPane();
+        tabPanel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 
         JScrollPane inventoryScrollPane = new JScrollPane(inventoryPanel);
         inventoryScrollPane.getVerticalScrollBar().setUnitIncrement(12);
@@ -98,7 +93,8 @@ public class GamePanel extends JPanel {
         tabPanel.addTab("Shop", null, shopScrollPane);
         tabPanel.setMnemonicAt(1, 'S');
 
-        this.add(tabPanel, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0,
+        tabPanel.setPreferredSize(new Dimension(this.getWidth() / 2, this.getHeight() / 5 * 3));
+        this.add(tabPanel, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.6,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
     }
