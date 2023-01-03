@@ -12,6 +12,8 @@ Je n'ai pas testé avec des versions supérieures.
 
 J'utilise donc javax et non jakarta.
 
+> **Important :** Bien penser à reload/sync Maven pour que les dépendances soient bien chargées.
+
 ## Composants
 
 ### Header
