@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="BookStore" target="16" />
+      <module name="ShootDaCubes" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>

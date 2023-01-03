@@ -19,3 +19,11 @@ Voir [README.md](RPG/README.md) dans le dossier `RPG` ([ici](RPG))
 ## Projet 4 : Chat
 
 Voir [README.md](Chat/README.md) dans le dossier `Chat` ([ici](Chat))
+
+## Projet 5 : BookStore
+
+Voir [README.md](BookStore/README.md) dans le dossier `BookStore` ([ici](BookStore))
+
+## Projet 6 : ShotDaCubes
+
+Voir [README.md](ShotDaCubes/README.md) dans le dossier `ShotDaCubes` ([ici](ShotDaCubes))
