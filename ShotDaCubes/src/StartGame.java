@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class StartGame extends GLCanvas implements GLEventListener, KeyListener {
 
-    private static final ArrayList<Cube> cubes = new ArrayList<>();
+    private final ArrayList<Cube> cubes = new ArrayList<>();
 
-    private static final SpaceShip spaceShip = new SpaceShip();
+    private final SpaceShip spaceShip = new SpaceShip();
 
     private float xOffset = -8f;
 
